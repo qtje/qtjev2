@@ -37,6 +37,34 @@
 
 <div id="OuterWrapper"> <div id="MainWrapper">
 
+{% if user.is_authenticated %}
+<div class="Navigation">
+<div class="NavSide">
+<div class="NavLL SmallTextWrap">
+Hello {{ user }} <br>
+<a href="">Logout</a>
+</div>
+<div class="NavL BigTextWrap">
+    <a href="">PAGES</a> l
+    <a href="">LINKS</a>
+</div>
+</div>
+<div class="NavC BigTextWrap">
+    l <a href="">TEMPLATES</a> l
+</div>
+<div class="NavSide">
+<div class="NavR BigTextWrap">
+    <a href="">THEMES</a> l
+    <a href="">ALIASES</a>
+</div>
+</div>
+</div>
+
+<div class="divider"></div>
+{% endif %}
+
+
+
 <!-- Navigation -->
 
 <div class="Navigation" id="topnav">
@@ -89,32 +117,6 @@
 </div>
 
 <div class="divider"></div>
-
-{% if user.is_authenticated %}
-<div class="Navigation">
-<div class="NavSide">
-<div class="NavLL SmallTextWrap">
-Hello {{ user }} <br>
-<a href="">Logout</a>
-</div>
-<div class="NavL BigTextWrap">
-    <a href="">PAGES</a> l
-    <a href="">LINKS</a>
-</div>
-</div>
-<div class="NavC BigTextWrap">
-    l <a href="">TEMPLATES</a> l
-</div>
-<div class="NavSide">
-<div class="NavR BigTextWrap">
-    <a href="">THEMES</a> l
-    <a href="">ALIASES</a>
-</div>
-</div>
-</div>
-
-<div class="divider"></div>
-{% endif %}
 
 <!-- Main Body -->
 
