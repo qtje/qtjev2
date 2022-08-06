@@ -2,8 +2,8 @@
 
 {% block extra_rss_links %}
 
-{% if object.theme_values.extra_rss_links %}
-    {{object.theme_values.extra_rss_links}}
+{% if theme_values.extra_rss_links %}
+    {{theme_values.extra_rss_links}}
 {% else %}
     <a>Feed for {{ object.owner.display_name }}</a>
 {% endif%}
@@ -12,8 +12,8 @@
 
 
 {% block left_links %}
-{% if object.theme_values.left_links %}
-    {{object.theme_values.left_links}}
+{% if theme_values.left_links %}
+    {{theme_values.left_links}}
 {% else %}
     {% for link in object.prev_links %}
         <div class="PixelWrap">
@@ -31,8 +31,8 @@
 {% endblock %}
 
 {% block center_links %}
-{% if object.theme_values.center_links %}
-    {{object.theme_values.center_links}}
+{% if theme_values.center_links %}
+    {{theme_values.center_links}}
 {% else %}
 <div>
         <div class="PixelWrap">
@@ -60,8 +60,8 @@
 
 
 {% block right_links %}
- {% if object.theme_values.right_links %}
-    {{object.theme_values.right_links}}
+ {% if theme_values.right_links %}
+    {{theme_values.right_links}}
 {% else %}
  
     {% for link in object.next_links %}
@@ -79,8 +79,8 @@
 {% endblock %}
 
 {% block nav_right %}
-{% if object.theme_values.nav_right %}
-    {{object.theme_values.nav_right}}
+{% if theme_values.nav_right %}
+    {{theme_values.nav_right}}
 {% else %}
 
 <div class="SmallTextWrap">
@@ -108,8 +108,8 @@
 
 
 {% block meta_left %}
-{% if object.theme_values.meta_left %}
-    {{object.theme_values.meta_left}}
+{% if theme_values.meta_left %}
+    {{theme_values.meta_left}}
 {% else %}
 
 <div class="SmallTextWrap">
@@ -120,8 +120,8 @@ Story Arc:<br>
 {% endblock %}
 
 {% block meta_right %}
-{% if object.theme_values.meta_right %}
-    {{object.theme_values.meta_right}}
+{% if theme_values.meta_right %}
+    {{theme_values.meta_right}}
 {% else %}
 
 <div class="SmallTextWrap">

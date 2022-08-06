@@ -49,16 +49,8 @@ class ComicView(generic.DetailView):
 
         self.date = date = process_date(date)
         result = models.ComicPage.get_view_page(date, page_key_str)
- 
-        if result is not None:
 
-            theme_context = Context({'object': result})
-
-            theme = result.theme.as_of(date)   
-            theme_dict = theme.get_templates()
-            result.theme_values = {k: v.render(theme_context) for k,v in theme_dict.items()}
-
-            return result
+        return result
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
@@ -68,6 +60,7 @@ class ComicView(generic.DetailView):
         result['querystring'] = self.request.GET.urlencode()
 
         result['body'] = instance.render_template(self.date, context=result)
+        result['theme_values'] = instance.render_theme(self.date, context=result)
 
         forums = ForumPost.objects.order_by('-timestamp').exclude(timestamp__gt=self.date)
         forums_here = forums.filter(source__page_key = instance.page_key)

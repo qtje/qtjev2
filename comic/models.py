@@ -344,6 +344,22 @@ class ComicPage(OwnedHistory, Searchable):
             template = Template(template_text)
             return template.render(context)
 
+    def render_theme(self, date, theme = None, context = None):
+
+        if theme is None:
+            theme = self.theme.as_of(date)   
+
+        if context is None:
+            context = Context({'object': self})
+        else:
+            context= Context(context)
+
+        theme_dict = theme.get_templates()
+        theme_values = {k: v.render(theme_context) for k,v in theme_dict.items()}
+
+        return theme_values
+
+
     @classmethod
     def get_view_page(cls, date, page_key_str):
         """
