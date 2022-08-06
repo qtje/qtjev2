@@ -101,7 +101,7 @@ class PageEditForm(forms.ModelForm):
 #        fields = ['title', 'arc', 'image', 'alt_text']
 
 class PageCreateForm(PageEditForm):
-    reciprocate_owner = forms.BooleanField(initial = True)   
+    reciprocate_owner = forms.BooleanField(initial = True, required=False)   
     is_create = True
 
     def __init__(self, **kwargs):
@@ -112,13 +112,14 @@ class PageCreateForm(PageEditForm):
         return result
 
     def is_valid(self):
-        prev_page_raw = self.data['prev_page_owner']
-        if prev_page_raw is not None:
+        if self.data.get('reciprocate_owner', False):
+            prev_page_raw = self.data['prev_page_owner']
             try:
                 prev_page = self.fields['prev_page_owner'].clean(prev_page_raw)
             except:
-                pass #This error will get caught later
-            else:
+                prev_page = None
+
+            if prev_page is not None:
                 if not prev_page.can_link('n', self.request.user):
                     self.add_error('reciprocate_owner', f'The page {prev_page.search_key()} already has too many next links.')
 
