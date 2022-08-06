@@ -18,8 +18,6 @@ import django.utils
 """
 I need to audit owner alias management to make sure it's rendering dated versions properly and using hk's for direct comparisons rather than instances.
 
-Need to implement authors and forum views
-
 Need to implement error pages
 
 Need a tutorial page for authors
@@ -584,4 +582,7 @@ class ForumPost(models.Model):
     text = models.TextField()
     timestamp = models.DateTimeField(auto_now = True)
     source = models.ForeignKey(ComicPage, on_delete = models.CASCADE, related_name = 'forum_posts')
+
+    def empty(self):
+        return self.text.strip() == '';
 

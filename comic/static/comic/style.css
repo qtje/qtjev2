@@ -249,6 +249,25 @@ display:block;
     margin-bottom: 2px;
 }
 
+.ForumPost
+{
+    padding-left: 2px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    border-top: 1px solid gray;
+}
+
+.ForumEmpty
+{
+    display: block;
+}
+input[type=checkbox]:checked ~ .ForumEmpty
+{
+    display: none;
+}
+
 .FooterBlock
 {
     text-align: left;

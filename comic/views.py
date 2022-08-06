@@ -177,6 +177,11 @@ class AuthorsView(generic.ListView):
         return result
         
 
+class ForumView(generic.ListView):
+    model = models.ForumPost
+    paginate_by = 100
+
+
 #
 # Entity Create/Edit Views (For Authors)
 #

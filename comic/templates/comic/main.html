@@ -144,7 +144,13 @@ Page Posted: <br>
 
 {% block forums %}
     {% for post in forums %}
-        <p>{{post.text}}</p>
+        <p class="ForumPost{% if post.empty %} ForumEmpty{%endif%}">
+        {% if not post.empty %}
+            {{post.text}}
+        {% else %}
+            &nbsp;
+        {% endif %}
+        </p>
     {% endfor %}
 {% endblock %}
 
