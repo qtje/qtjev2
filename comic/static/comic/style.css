@@ -277,8 +277,41 @@ div.SideUnit
 }
 
 
+.AuthorForm {
+    margin: 0.5em;
+    display: grid;
+    grid-template-columns: max-content auto;
+    grid-column-gap: 1em;
+    grid-row-gap: 0.5em;
+}
 
-input[type=text]
+.AuthorFormDivider {
+    grid-column: 1 / span 2;
+    min-height: 0.5em;
+}
+
+.PageFormLinkField {
+    display: grid;
+    grid-template-columns: auto max-content max-content;
+    grid-column-gap: 0.5em;
+    grid-row-gap: 0.5em;
+}
+
+.AFLabel {
+    text-align: right;
+    align-self: self-end;
+}
+
+.AFField {
+}
+
+.AuthorForm input[type=text]
 {
-    width:90%;
+    width: 100%;
+    box-sizing: border-box;
+}
+.AuthorForm textarea
+{
+    width: 100%;
+    box-sizing: border-box;
 }

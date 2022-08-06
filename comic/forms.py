@@ -1,4 +1,5 @@
 from django import forms
+import django.core.exceptions
 
 from . import models
 
@@ -10,24 +11,19 @@ Ultimately I think I need a custom Form class as well, and possible a custom vie
 I need the form to know the user, I need the view to check that the user is allowed to edit this thing
 """
 
-class DummyWidget(forms.Widget):
-        template_name = "comic/dummy_widget.html"
-
 class AutocompleteWidget(forms.TextInput):
     template_name = "comic/autocomplete_widget.html"
 
-    def __init__(self, choices, model, user, attrs=None):
+    def __init__(self, choices, attrs=None):
         super().__init__(attrs)
         self.choices = choices
-        self.model = model
-        self.user = user
 
     def get_context(self, name, value, attrs):
         list_name = attrs.get('list', None)
         if list_name is None:
             attrs['list'] = f'list_{name}'
 
-        choices = self.choices(user=self.user)
+        choices = self.choices
         choices = [(x.search_key(), x.search_string()) for x in choices]
 
         context = super().get_context(name, value, attrs)
@@ -42,13 +38,17 @@ class AutocompleteWidget(forms.TextInput):
 
 class HistoryModelField(forms.Field):
     widget=AutocompleteWidget
-    def __init__(self, user, model, **kwargs):
-        self.model = model
-        self.user = user
-        choices = model.get_all_latest
-        kwargs['widget'] = self.widget(choices = choices, model=model, user=user)
+    def __init__(self, choices, **kwargs):
+        kwargs['widget'] = self.widget(choices = choices)
         super().__init__(**kwargs)
-        
+
+    def clean(self, value):
+        print('beep')
+        raise django.core.exceptions.ValidationError("Test")
+
+    def validate(self, value):
+        print('beep')
+        raise django.core.exceptions.ValidationError("Test")       
 
 
 class PageEditForm(forms.ModelForm):
@@ -58,11 +58,13 @@ class PageEditForm(forms.ModelForm):
 #        )
 #    next_page_any = HistoryModelField(model=models.ComicPage)
 
-    reciprocate_owner = forms.BooleanField()
-    reciprocate_any = forms.BooleanField()
+    reciprocate_owner = forms.BooleanField(initial = True)
+    reciprocate_any = forms.BooleanField(initial = True)
 
-    def add_history_field(self, name, user, model, instance):
-        self.fields[name] = HistoryModelField(model=model, user=user)
+    def add_history_field(self, name, user, model, instance, choices = None):
+        if choices is None:
+            choices = model.get_all_latest(user=user)
+        self.fields[name] = HistoryModelField(choices=choices)
         if not instance is None:
             self.initial[name] = instance.search_key()
 
@@ -79,8 +81,8 @@ class PageEditForm(forms.ModelForm):
         self.add_history_field('arc', None, models.ComicArc, instance.arc)
         self.add_history_field('owner', user, models.Alias, instance.owner)
 
-        self.add_history_field('next_page_owner', None, models.ComicPage, None)
-        self.add_history_field('next_page_any', None, models.ComicPage, None)
+        self.add_history_field('prev_page_owner', None, models.ComicPage, None)
+        self.add_history_field('prev_page_any', None, models.ComicPage, None)
 
 
         return result
@@ -90,7 +92,6 @@ class PageEditForm(forms.ModelForm):
         model = models.ComicPage
         exclude = ['hk', 'template', 'theme', 'arc', 'owner']
         widgets = {
-            'page_key': DummyWidget,
             'title': forms.TextInput,
             'alt_text': forms.TextInput,
         }

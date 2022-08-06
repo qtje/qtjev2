@@ -6,9 +6,7 @@
 
 {% block center_links %}
 <div class="BigTextWrap">
-    <a href = "">
-        Do It
-    </a>
+Creating new page
 </div>
 {% endblock %}
 
@@ -20,9 +18,112 @@
 
 
 {% block body %}
-<form>
+<form class="AuthorForm">
 {% csrf_token %}
-{{ form.as_p }}
+
+{{ form.non_field_errors }}
+
+<div class="AFLabel">
+    <label for="{{form.page_key.id_for_label}}">Page</label>
+</div>
+<div class="AFField">
+    {{form.page_key.value}}
+    <span title="When creating a new page, this is the next available page number at the time of submission, which might not be the value displayed here.">&#x24D8;</span>
+ 
+    <input type="hidden" value="{{ form.page_key.value }}" id="{{ form.page_key.id_for_label}}">
+</div>
+
+<div class="AFLabel">
+    {% if form.image.errors %} 
+        <span title="{{form.image.errors}}">&#x26A0;</span>
+    {% endif %}
+    <label for="{{form.image.id_for_label}}">Image</label>
+</div>
+<div class="AFField">
+   {{ form.image }}
+</div>
+
+<div class="AFLabel">
+   {{ form.title.errors }} 
+    <label for="{{form.title.id_for_label}}">Title</label>
+</div>
+<div class="AFField">
+   {{ form.title }}
+</div>
+
+<div class="AFLabel">
+   {{ form.alt_text.errors }} 
+    <label for="{{form.alt_text.id_for_label}}">Alt Text</label>
+</div>
+<div class="AFField">
+   {{ form.alt_text }}
+</div>
+
+<div class="AFLabel">
+   {{ form.arc.errors }} 
+    <label for="{{form.arc.id_for_label}}">Story Arc</label>
+</div>
+<div class="AFField">
+   {{ form.arc }}
+</div>
+
+
+<div class="AuthorFormDivider"></div>
+
+
+<div class="AFLabel">
+   {{ form.prev_page_owner.errors }} 
+    <label for="{{form.prev_page_owner.id_for_label}}">Previous Page</label>
+</div>
+<div class="PageFormLinkField">
+    <div class="AFField">
+       {{ form.prev_page_owner }}
+
+    </div>
+    <div>
+       {{ form.reciprocate_owner}}
+    {{form.reciprocate_owner.errors}}
+    <label for="{{form.reciprocate_owner.id_for_label}}">Reciprocate</label> 
+    <span title="A reciprocal 'next' link will be created from the previous page to this page. If this box is not checked, then the specified previous page will not link to this page.">&#x24D8;</span>
+    </div>
+ 
+</div>
+
+
+<div class="AuthorFormDivider"></div>
+
+
+<div class="AFLabel">
+   {{ form.template.errors }} 
+    <label for="{{form.template.id_for_label}}">Template</label>
+</div>
+<div class="AFField">
+   {{ form.template }}
+</div>
+
+<div class="AFLabel">
+   {{ form.theme.errors }} 
+    <label for="{{form.theme.id_for_label}}">Theme</label>
+</div>
+<div class="AFField">
+   {{ form.theme }}
+</div>
+
+
+<div class="AFLabel">
+   {{ form.transcript.errors }} 
+    <label for="{{form.transcript.id_for_label}}">Transcript</label>
+</div>
+<div class="AFField">
+   {{ form.transcript }}
+</div>
+
+<div class="AuthorFormDivider">
+<center>
+    <input type="submit" value="Create Page">
+</center>
+</div>
+
 </form>
 {% endblock %}
 
