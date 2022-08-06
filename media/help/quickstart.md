@@ -1,8 +1,12 @@
-# QTJEv2 Author Quickstart Guide
+# qtjev2 Author Quickstart Guide
+
+## What is qtjev2?
+
+In simplest terms, qtjev2 is a system that faciliates multi-user construction of a directed graph for the purpose of imposing narrative structure on a collection of comic pages. This short tutorial will cover the basic steps required to implement a conventional linear webcomic structure in qtjev2.
 
 ## Create an Alias
 
-All qtje pages and links are owned by an Alias owned by and Author. Therefore you'll need to create an Alias to begin posting. You can click the `ALIASES` link at the top of the page to manage your Aliases. This page lists all of your Aliases (none until you create one). Click `New Alias` to create a new Alias.
+All qtjev2 Pages and Links are owned by an Alias owned by and Author. Therefore you'll need to create an Alias to begin posting. You can click the `ALIASES` link at the top of the page to manage your Aliases. This page lists all of your Aliases (none until you create one). Click `New Alias` to create a new Alias.
 ![Alias Management Page]({% static 'help/alias_mgmt.png' %})
 
 You'll be presented with a form to create a new alias
@@ -31,7 +35,7 @@ The form comes populated with one of your Aliases, but the Alias can be changed 
 
 The minimum required to upload a new page is an image (selected via the Browse button in the Image field), but you'll typically also want to link to a previous page. You can type the number of title of the previous page in the Previous Page field and select the matching page from the dropdown. If you haven't created any pages, then you'll have to link to a page created by another author. You can link to a page that already has a next page as long as it has fewer than 3 next pages.
 
-At this point, you could click `Create Page` to upload the new image as a comic page following the selected previous page and published as the selected Alias. Along with alt text, this is all you need to create a conventional serial webcomic.
+At this point, you could click `Create Page` to upload the new image as a comic page following the selected previous page and published as the selected Alias. Along with alt text, this is all you need to create a conventional serial webcomic. Note that once created, pages can be edited but cannot be deleted. This is true of all comic objects except links between pages.
 
 ### Field Mapping
 
