@@ -317,6 +317,24 @@ class ComicPage(OwnedHistory, Searchable):
 
         return f'Page {self.page_key} as of {self.created_at}'
 
+    @classmethod
+    def fmt_page_key(cls, page_key):
+        return f'{page_key:04x}'
+
+    @classmethod
+    def clean_page_key(cls, page_key_str):
+        page_key = int(page_key_str, 16)
+        return cls.fmt_page_key(page_key)
+
+    @classmethod
+    def get_next_page_key(cls):
+        keys = [int(x.page_key, 16) for x in cls.objects.all()]
+        latest = max(keys)
+        if latest >= 0xffff:
+            raise RuntimeError('Out of keys')
+        return cls.fmt_page_key(latest+1)
+
+
 def page_post_save(**kwargs):
     """
     When a new History instance is created, and the hk hasn't been set

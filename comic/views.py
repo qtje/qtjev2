@@ -43,13 +43,15 @@ def get_comic_page(date, page_key_str):
     Enforce format of the page key
     """
     try:
-        page_key = int(page_key_str, 16)
-        page_key = f'{page_key:04}'
+        page_key = models.ComicPage.clean_page_key(page_key_str)
         pages =  models.ComicPage.objects.filter(
                     page_key=page_key).order_by(
                     '-created_at').filter(created_at__lte=date)
         result = pages[0]
         result.first_version = pages.order_by('created_at')[0]
+    except ValueError:
+        #TODO Handle bad page key
+        raise
     except IndexError:
         return None
 
@@ -167,22 +169,16 @@ class PageCreateView(LoginRequiredMixin, generic.edit.CreateView):
     template_name = 'comic/page_edit.html'
     form_class = forms.PageCreateForm
 
-    def get_object(self, queryset = None):
-
-        page_key_str = self.kwargs.get('pk', '0')
-
-        date = process_date(None)
-        result = get_comic_page(date, page_key_str)
-
-        return result
-
-
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
         result['request'] = self.request
         return result
 
     def post(self, request, *args, **kwargs):
+        print(request.POST)
+        page_key = models.ComicPage.get_next_page_key()
+        print(page_key)
+        #TODO: update request with next available page key
         return super().post(request, *args, **kwargs)
 
 
