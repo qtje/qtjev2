@@ -47,26 +47,10 @@ class ComicView(generic.DetailView):
         date = self.request.GET.get('date', None)
         page_key_str = self.kwargs.get('pk', '0')
 
-        date = process_date(date)
+        self.date = date = process_date(date)
         result = models.ComicPage.get_view_page(date, page_key_str)
  
         if result is not None:
-
-            result.querystring = self.request.GET.urlencode()
-
-            forums = ForumPost.objects.order_by('-timestamp').exclude(timestamp__gt=date)
-            forums_here = forums.filter(source__page_key = result.page_key)
-
-            ref = None
-            try:
-                ref = forums[0]
-                ref = forums_here[0]
-            except IndexError:
-                pass
-
-            if ref is not None:
-                forums = ForumPost.objects.order_by('-timestamp').exclude(timestamp__gt=ref.timestamp)
-                result.forums = forums[:20]
 
             theme_context = Context({'object': result})
 
@@ -80,6 +64,31 @@ class ComicView(generic.DetailView):
             result.theme_values = {k: v.render(theme_context) for k,v in theme_dict.items()}
 
             return result
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+
+        instance = result['object']
+
+        result['querystring'] = self.request.GET.urlencode()
+
+        forums = ForumPost.objects.order_by('-timestamp').exclude(timestamp__gt=self.date)
+        forums_here = forums.filter(source__page_key = instance.page_key)
+
+        ref = None
+        try:
+            ref = forums[0]
+            ref = forums_here[0]
+        except IndexError:
+            pass
+
+        if ref is not None:
+            forums = ForumPost.objects.order_by('-timestamp').exclude(timestamp__gt=ref.timestamp)
+            forums = forums[:20]
+
+        result['forums'] = forums
+
+        return result
 
 forum_filter = str.maketrans({x: None for x in ',.:;\'"'})
 
