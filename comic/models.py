@@ -291,7 +291,7 @@ class PageTheme(OwnedHistory, Searchable):
 
 class ComicArc(OwnedHistory, Searchable):
     owner = models.ForeignKey(Alias, on_delete = models.CASCADE, related_name = 'owned_arcs')
-    slug_name = models.TextField()
+    slug_name = models.TextField(max_length=1024)
     display_name = models.TextField()
 
     def __str__(self):
