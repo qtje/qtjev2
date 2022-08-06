@@ -29,20 +29,7 @@ class ComicView(generic.DetailView):
         else:
             date = dateutil.parser.parse(date)
 
-        #TODO: comic links are queried only on current state, not history.
-#        print(models.ComicLink.objects.get(from_page=result))
-
-        try:
-            result = result.history.as_of(date)
-        except models.ComicPage.DoesNotExist:
-            return None
-
-        result.history_info = result._history
-
-        template = Template(result.template.history.as_of(date).template)
-
-        print(models.ComicLink.objects.get(from_page=result))
-        #TODO: dereference links to date
+        template = Template(result.template.template)
 
         body = template.render(Context({'object': result}))
 
