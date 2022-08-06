@@ -22,6 +22,7 @@ Need to do actual layout.
 
 Need a set of pages for authors to use to make changes. I think I just need to take complete control over the forms available to authors rather than using the admin site. This way I can more clearly define the actions and author can take and create UX that's tailored to making those actions managable.
 
+Need to work out how to have author accounts
 """
 
 
@@ -141,7 +142,7 @@ class ComicPage(OwnedHistory):
     title = models.TextField()
     arc = models.ForeignKey(ComicArc, on_delete = models.CASCADE)
 
-    image = models.ImageField()
+    image = models.ImageField(upload_to='images')
     alt_text = models.TextField()
 
     transcript = models.TextField(blank=True, null=True)
@@ -158,8 +159,8 @@ class ComicPage(OwnedHistory):
             self.created_at = stamp
 
             
-            self.old_from = self.links_from.all()
-            self.old_to = self.links_to.all()
+            self._old_from = list(self.links_from.all())
+            self._old_to = list(self.links_to.all())
  
             self.pk = None
             self.id = None
@@ -183,11 +184,11 @@ def page_post_save(**kwargs):
     instance = kwargs['instance']
     
     if isinstance(instance, ComicPage):
-        for entry in instance.old_from:
+        for entry in instance._old_from:
             if entry.deleted_at is None:
                 entry.from_page = instance
                 entry.save()
-        for entry in instance.old_to:
+        for entry in instance._old_to:
             if entry.deleted_at is None:
                 entry.to_page = instance
                 entry.save()
