@@ -98,6 +98,8 @@ class PageEditForm(forms.ModelForm):
         return result
 
     def is_valid(self):
+        if self.fields['owner'].get_instance(self.data['owner']).owner.user != self.request.user:
+            self.add_error('owner', 'Please enter an alias that you own.')
         return super().is_valid()
 
     def save(self, commit=True):
