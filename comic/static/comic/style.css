@@ -205,16 +205,21 @@ background: #ffff;
 display:block;
 }
 
-
-#forum
+.ForumForm
 {
-     text-align: left;
-     font-size: 12px;
-     width: 800px;
+    display:flex;
+    align-items:center;
+    margin-bottom: 2px;
+}
 
-     margin-left: 7px;
-//     border-top: 1px solid #000000;
-     padding: 0px;
+.FooterBlock
+{
+    text-align: left;
+    font-size: 14px;
+    width: 806px;
+    margin-top:4px;
+    margin-left: 4px;
+    padding: 0px;
 }
 
 #Botad

@@ -86,15 +86,23 @@ Last Modified: <br>
 </div>
 {% endblock %}
 
-{% block forums %}
-<form action="post" method=post>
-{% csrf_token %}
-<input type="hidden" value="{{ request.get_full_path }}" name="return">
-<input type="hidden" value="{{ object.page_key }}" name="source">
-comment: <input type="text" name="comment" size="108" style="max-width:100%;"> 
-<input type="submit" value="post">
+{% block forum_form %}
+
+<form action="post" method=post style="width:100%">
+    <div class="ForumForm">
+        {% csrf_token %}
+        <input type="hidden" value="{{ request.get_full_path }}" name="return">
+        <input type="hidden" value="{{ object.page_key }}" name="source">
+        <div>comment:</div>
+        <input type="text" name="comment" size="10" style="flex-grow:1; margin-right:2px; margin-left:2px"> 
+        <input type="submit" value="post">
+    </div>
 </form>
-<br>
+{% endblock %}
+
+
+
+{% block forums %}
     {% for post in object.forums %}
         <p>{{post.text}}</p>
     {% endfor %}

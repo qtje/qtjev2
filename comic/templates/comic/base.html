@@ -165,16 +165,30 @@
 </div>
 <!-- Forum Section TODO: Make this conditional -->
 
-<div id="forum">
+<div class="FooterBlock" id="forum-form">
+
+{% block forum_form %}
+{% endblock %}
+
+</div>
+
+<div class="FooterBlock">
+    <div class="divider"></div>
+</div>
+
+<div class="FooterBlock" id="forum">
 
 {% block forums %}
 {% endblock %}
 
 </div>
 
+<div class="FooterBlock">
+    <div class="divider"></div>
+</div>
 <!-- Disclaimer -->
 
-<div class="forum" style="font-size:8px;">
+<div class="FooterBlock" id="disclaimer" style="font-size:8px;">
 Disclaimer: qtje  maintains no consistent or meaningful basis of sincerity, realism, causality, or morality. Readers are expected to use their own judgement in evaluating the content. These comics should not be taken as endorsements, nor should these characters be viewed as role models.<br>
 The qtje forum is unmoderated, and qtje takes no responsibility for the nature of any user generated content it may contain.
 </div>
