@@ -333,6 +333,38 @@ class ComicPage(OwnedHistory, Searchable):
         return reverse('comic:page', kwargs={'pk': self.page_key})
 
     @classmethod
+    def get_view_page(cls, date, page_key_str):
+        """
+        Retrieve a comic page by its page key and the target date.
+        If the page exists, prepare it for rendering by a template
+        """
+        try:
+            page_key = cls.clean_page_key(page_key_str)
+            pages =  cls.objects.filter(
+                        page_key=page_key).order_by(
+                        '-created_at').filter(created_at__lte=date)
+            result = pages[0]
+            result.first_version = pages.order_by('created_at')[0]
+        except ValueError:
+            #TODO Handle bad page key
+            raise
+        except IndexError:
+            return None
+
+
+        links_from = result.links_from.exclude(deleted_at__lte=date).exclude(created_at__gt=date)
+
+        result.next_links = links_from.filter(kind='n')
+        result.prev_links = links_from.filter(kind='p')
+        result.first_links = links_from.filter(kind='f')
+
+        result.arc = result.arc.as_of(date)
+
+        return result
+
+
+
+    @classmethod
     def fmt_page_key(cls, page_key):
         return f'{page_key:04x}'
 

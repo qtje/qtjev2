@@ -22,6 +22,8 @@ urlpatterns = [
     path('edit/arc', views.ArcCreateView.as_view(), name='edit_arc'),
     path('edit/alias/<int:hk>', views.AliasEditView.as_view(), name='edit_alias'),
     path('edit/alias', views.AliasCreateView.as_view(), name='edit_alias'),
+    path('edit/template/<int:hk>', views.TemplateEditView.as_view(), name='edit_template'),
+    path('edit/template', views.TemplateCreateView.as_view(), name='edit_template'),
 
     path('list/pages', views.PageEditListView.as_view(), name='list_pages'),
     path('list/links', views.LinkEditListView.as_view(), name='list_links'),

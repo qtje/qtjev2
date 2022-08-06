@@ -38,28 +38,6 @@ def process_date(date):
         date = dateutil.parser.parse(date)
     return date
 
-
-def get_comic_page(date, page_key_str):
-    """
-    Retrieve a comic page by its page key and the target date.
-    Enforce format of the page key
-    """
-    try:
-        page_key = models.ComicPage.clean_page_key(page_key_str)
-        pages =  models.ComicPage.objects.filter(
-                    page_key=page_key).order_by(
-                    '-created_at').filter(created_at__lte=date)
-        result = pages[0]
-        result.first_version = pages.order_by('created_at')[0]
-    except ValueError:
-        #TODO Handle bad page key
-        raise
-    except IndexError:
-        return None
-
-    return result
-
-
 class ComicView(generic.DetailView):
     model = ComicPage 
     template_name = 'comic/main.html'
@@ -70,17 +48,11 @@ class ComicView(generic.DetailView):
         page_key_str = self.kwargs.get('pk', '0')
 
         date = process_date(date)
-        result = get_comic_page(date, page_key_str)
+        result = models.ComicPage.get_view_page(date, page_key_str)
  
         if result is not None:
 
             result.querystring = self.request.GET.urlencode()
-
-            links_from = result.links_from.exclude(deleted_at__lte=date).exclude(created_at__gt=date)
-
-            result.next_links = links_from.filter(kind='n')
-            result.prev_links = links_from.filter(kind='p')
-            result.first_links = links_from.filter(kind='f')
 
             forums = ForumPost.objects.order_by('-timestamp').exclude(timestamp__gt=date)
             forums_here = forums.filter(source__page_key = result.page_key)
@@ -95,8 +67,6 @@ class ComicView(generic.DetailView):
             if ref is not None:
                 forums = ForumPost.objects.order_by('-timestamp').exclude(timestamp__gt=ref.timestamp)
                 result.forums = forums[:20]
-
-            result.arc = result.arc.as_of(date)
 
             theme_context = Context({'object': result})
 
@@ -151,7 +121,7 @@ class PageEditView(LoginRequiredMixin, generic.edit.UpdateView):
         page_key_str = self.kwargs.get('pk', '0')
 
         date = process_date(None)
-        result = get_comic_page(date, page_key_str)
+        result = models.ComicPage.get_view_page(date, page_key_str)
 
         assert result.is_owned_by(self.request.user)
 
@@ -235,6 +205,18 @@ class AliasCreateView(GenericCreateView):
     success_url = reverse_lazy('comic:list_aliases')
     model = models.Alias
     form_class = forms.AliasCreateForm
+
+
+class TemplateEditView(GenericEditView):
+    success_url = reverse_lazy('comic:list_templates')
+    model = models.PageTemplate
+    form_class = forms.TemplateEditForm
+
+class TemplateCreateView(GenericCreateView):
+    success_url = reverse_lazy('comic:list_templates')
+    model = models.PageTemplate
+    form_class = forms.TemplateCreateForm
+
 
 
 #
@@ -321,8 +303,8 @@ class LinkEditListView(EditListView):
 
 class TemplateEditListView(EditListView):
     model = models.PageTemplate
-    edit_url = 'comic:page'
-    new_url = 'comic:index'
+    edit_url = 'comic:edit_template'
+    new_url = 'comic:edit_template'
     new_link_text = 'New Template'
 
     def render_table_map(self, object_list):

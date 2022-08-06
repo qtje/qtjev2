@@ -1,4 +1,7 @@
+import datetime
+
 import django.db.models
+import django.template
 from django import forms
 from django.core.exceptions import ValidationError
 
@@ -260,6 +263,54 @@ class AliasCreateForm(AliasEditForm):
 
     heading = 'Creating new alias'
     button = 'Create Alias'
+
+#
+# Template edit
+#
+
+class TemplateEditForm(MyForm):
+
+    is_create = False
+    post_url = 'comic:edit_template'
+
+    button = 'Update Template'
+
+    def __init__(self, **kwargs):
+        instance = kwargs['instance']
+        if not self.is_create:
+            self.heading = f'Editing template {instance.name}'
+        return super().__init__(**kwargs)
+
+    def is_valid(self):
+        template = self.data['template']
+
+        if template is not None and template != '':
+            try:
+                template = django.template.Template(template)
+                date = datetime.datetime.now(datetime.timezone.utc)
+                test_data = models.ComicPage.get_view_page(date, '0000')
+                context = django.template.Context({'object': test_data})
+                test_render = template.render(context)
+            except Exception as e:
+                self.add_error('template', str(e))
+
+        return super().is_valid()
+
+    class Meta:
+        model = models.PageTemplate
+        exclude = ['hk', 'owner']
+        widgets = {
+            'name': forms.TextInput
+        }
+
+class TemplateCreateForm(TemplateEditForm):
+
+    is_create = True
+    post_url = 'comic:edit_template'
+
+    heading = 'Creating new template'
+    button = 'Create Template'
+
 
 
 
