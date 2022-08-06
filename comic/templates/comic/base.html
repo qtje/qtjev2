@@ -45,16 +45,16 @@ Hello {{ user }} <br>
 </div>
 <div class="NavL BigTextWrap">
     <a href="{% url 'comic:edit_pages' %}">PAGES</a> l
-    <a href="">LINKS</a>
+    <a href="{% url 'comic:index' %}">LINKS</a>
 </div>
 </div>
 <div class="NavC BigTextWrap">
-    l <a href="">TEMPLATES</a> l
+    l <a href="{% url 'comic:edit_templates' %}">TEMPLATES</a> l
 </div>
 <div class="NavSide">
 <div class="NavR BigTextWrap">
-    <a href="">THEMES</a> l
-    <a href="">ALIASES</a>
+    <a href="{% url 'comic:edit_themes' %}">THEMES</a> l
+    <a href="{% url 'comic:edit_aliases' %}">ALIASES</a>
 </div>
 </div>
 </div>

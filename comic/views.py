@@ -88,7 +88,7 @@ class EditListView(LoginRequiredMixin, generic.ListView):
     template_name = 'comic/page_list.html'
     hk = 'hk'
 
-    view_url = ''
+    view_url = None
     edit_url = 'comic:page'
     new_url = 'comic:index'
     new_link_text = 'New Whatever'
@@ -109,15 +109,12 @@ class EditListView(LoginRequiredMixin, generic.ListView):
 
 
 class PageEditListView(EditListView):
-    login_url = '/login'
     model = ComicPage
-    template_name = 'comic/page_list.html'
     hk = 'page_key'
     view_url = 'comic:page'
     edit_url = 'comic:page'
     new_url = 'comic:index'
     new_link_text = 'New Page'
-
 
     def render_table_map(self, object_list):
         header = ['Page Number', 'Title', 'Story Arc', 'Alt Text', 'Owner', 'Last Modified']
@@ -136,6 +133,80 @@ class PageEditListView(EditListView):
             'header': header,
             'rows' : tables,
         }
+
+class TemplateEditListView(EditListView):
+    model = models.PageTemplate
+    edit_url = 'comic:page'
+    new_url = 'comic:index'
+    new_link_text = 'New Template'
+
+    def render_table_map(self, object_list):
+        header = ['Key', 'Name', 'Owner', 'Last Modified']
+        tables = []
+        for entry in object_list:
+            row_data = [entry.hk, entry.name, entry.owner.display_name, entry.created_at]
+            row = {
+                'row_data': row_data,
+                'edit_key': entry.hk,
+                'view_key': entry.hk,
+                }
+
+            tables.append(row)
+
+        return {
+            'header': header,
+            'rows' : tables,
+        }
+
+class ThemeEditListView(EditListView):
+    model = models.PageTheme
+    edit_url = 'comic:page'
+    new_url = 'comic:index'
+    new_link_text = 'New Theme'
+
+    def render_table_map(self, object_list):
+        header = ['Key', 'Name', 'Owner', 'Last Modified']
+        tables = []
+        for entry in object_list:
+            row_data = [entry.hk, entry.name, entry.owner.display_name, entry.created_at]
+            row = {
+                'row_data': row_data,
+                'edit_key': entry.hk,
+                'view_key': entry.hk,
+                }
+
+            tables.append(row)
+
+        return {
+            'header': header,
+            'rows' : tables,
+        }
+
+class AliasEditListView(EditListView):
+    model = models.Alias
+    edit_url = 'comic:page'
+    new_url = 'comic:index'
+    new_link_text = 'New Alias'
+
+    def render_table_map(self, object_list):
+        header = ['Key', 'Name', 'Last Modified']
+        tables = []
+        for entry in object_list:
+            row_data = [entry.hk, entry.display_name, entry.created_at]
+            row = {
+                'row_data': row_data,
+                'edit_key': entry.hk,
+                'view_key': entry.hk,
+                }
+
+            tables.append(row)
+
+        return {
+            'header': header,
+            'rows' : tables,
+        }
+
+
 
 
 

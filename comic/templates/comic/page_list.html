@@ -31,9 +31,9 @@
 <tr>
     {% for value in row.row_data %}
         <td>
-        {% if forloop.first %} <a href="{% url view_url row.view_key %}"> {% endif %}
+        {% if forloop.first and view_url %} <a href="{% url view_url row.view_key %}"> {% endif %}
         {{value|truncatechars:40}}
-        {% if forloop.first %} </a> {% endif %}
+        {% if forloop.first and view_url %} </a> {% endif %}
         </td>
     {% endfor %}
     <td>

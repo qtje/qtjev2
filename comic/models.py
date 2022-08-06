@@ -70,11 +70,15 @@ class OwnedHistory(models.Model):
                     '-created_at').filter(created_at__lte=date)[0]
         return result
 
+    @staticmethod
+    def filter_owner(queryset, user):
+        return queryset.filter(owner__owner__user=user)
+
     @classmethod
     def get_all_latest(cls, user, key='kh'):
         result = cls.objects
         if user is not None:
-            result = result.filter(owner__owner__user=user)
+            result = cls.filter_owner(result, user)
         result = result.order_by(f'-{key}', '-created_at')
     
         res_map = {}
@@ -123,6 +127,9 @@ class Alias(OwnedHistory):
         count = Alias.objects.filter(display_name=self.display_name).count()
         return count > 1
 
+    @staticmethod
+    def filter_owner(queryset, user):
+        return queryset.filter(owner__user=user)
 
     def __str__(self):
         return f'{self.display_name} ({self.owner})'
