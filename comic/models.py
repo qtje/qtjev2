@@ -13,12 +13,14 @@ from simple_history.models import HistoricalRecords
 # Create your models here.
 
 """
-Okay here's how the history is gonna work.
-Every history'd table gets a created_at, deleted_at.
-Maybe there is a way too make it so that edits to the database automatically
-create new entries instead and populate the date fields as needed. Otherise
-there will just have to be some special forms or w/e that bypass the functionality.
-don't really want to have to mess w/ django rest api though
+I would like to make the django admin be able to show only the latest versions
+of Historied models.
+
+I need to be able to hide created_at and hk fields in admin.
+
+I need a way of automatically updating links to follow pages when they update
+when a page saves, it should call save on all its attached links and point them
+at itself, the new instance?
 """
 
 
@@ -144,7 +146,7 @@ class ComicPage(OwnedHistory):
     theme = models.ForeignKey(PageTheme, on_delete = models.CASCADE)
 
     def __str__(self):
-        return f'Page {self.page_key}'
+        return f'Page {self.page_key} as of {self.created_at}'
 
 class ComicLink(OwnedHistory):
     """

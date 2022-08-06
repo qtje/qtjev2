@@ -21,13 +21,20 @@ class ComicView(generic.DetailView):
     template_name = 'comic/main.html'
 
     def get_object(self, queryset = None):
-        result =  models.ComicPage.objects.get(page_key=self.kwargs.get('pk', '0000'))
 
         date = self.request.GET.get('date', None)
         if date is None:
             date = datetime.datetime.utcnow()
         else:
             date = dateutil.parser.parse(date)
+
+        try:
+            result =  models.ComicPage.objects.filter(
+                        page_key=self.kwargs.get('pk', '0000')).order_by(
+                        '-created_at').filter(created_at__lte=date)[0]
+        except IndexError:
+            return None
+                    
 
         template = Template(result.template.template)
 
