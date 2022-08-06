@@ -437,10 +437,16 @@ class ComicPage(OwnedHistory, Searchable):
 
         links_from = result.links_from.exclude(deleted_at__lte=date).exclude(created_at__gt=date)
 
-        #TODO: Order links by owner and date
         result.next_links = links_from.filter(kind='n')
         result.prev_links = links_from.filter(kind='p')
         result.first_links = links_from.filter(kind='f')
+
+        def order_key(x):
+            return [x.owner != result.owner, x.created_at]
+
+        result.next_links = sorted(result.next_links, key = order_key)
+        result.prev_links = sorted(result.prev_links, key = order_key, reverse=True)
+        result.first_links = sorted(result.first_links, key = order_key)
 
         result.arc = result.arc.as_of(date)
     
