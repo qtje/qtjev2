@@ -110,4 +110,9 @@ class PageCreateForm(PageEditForm):
 
         return result
 
+    def is_valid(self):
+        self.add_error('reciprocate_owner', 'Test')
+        return super().is_valid()
+
+
 
