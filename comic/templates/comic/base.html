@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
    "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -10,52 +11,27 @@
     <meta content="A webcomic of depression, sarcasm, irony, and ennui. Updates whenever." name=description>
     <meta content="qtje, webcomic, ironic" name=keywords>
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-    <link href="style.css" type="text/css" rel=stylesheet id = "style1">
+    <link href="{% static 'comic/style.css' %}" type="text/css" rel=stylesheet id = "style1">
     <title>
     qtje
     </title>
   </head>
 <body>
 
-<!-- Project Wonderful Ad Box Loader -->
-<script type="text/javascript">
-   (function(){function pw_load(){
-      if(arguments.callee.z)return;else arguments.callee.z=true;
-      var d=document;var s=d.createElement('script');
-      var x=d.getElementsByTagName('script')[0];
-      s.type='text/javascript';s.async=true;
-      s.src='//www.projectwonderful.com/pwa.js';
-      x.parentNode.insertBefore(s,x);}
-   if (window.attachEvent){
-    window.attachEvent('DOMContentLoaded',pw_load);
-    window.attachEvent('onload',pw_load);}
-   else{
-    window.addEventListener('DOMContentLoaded',pw_load,false);
-    window.addEventListener('load',pw_load,false);}})();
-</script>
-<!-- End Project Wonderful Ad Box Loader -->
-
 <div id="HeaderWrapper"><div id="wrapper">
-<div id="Header"><a href="http://qtje.net"><img class="profile" src="banner.png"></a></div> <div id="Header2"> A webcomic of depression<br> sarcasm, irony, and ennui</div>
+<div id="Header"><!--<a href="http://qtje.net"><img class="profile" src="banner.png"></a>--></div> 
+<div id="Header2"> A webcomic of depression<br> sarcasm, irony, and ennui</div>
 </div></div>
 <div id="Updates">QTJE updates whenever I can drag myself out of bed.</div>
 
-  <div id="Background"><div id="content">
-    <div class="SideUnit">
+<div id="Background"><div id="content">
 
+<div class="SideUnit">
+</div>
 
-<!-- Project Wonderful Ad Box Code -->
-<div id="pw_adbox_77009_3_0"></div>
-<script type="text/javascript"></script>
-<noscript><map name="admap77009" id="admap77009"><area href="http://www.projectwonderful.com/out_nojs.php?r=0&c=0&id=77009&type=3" shape="rect" coords="0,0,160,600" title="" alt="" target="_blank" /></map>
-<table cellpadding="0" cellspacing="0" style="width:160px;border-style:none;background-color:#ffffff;"><tr><td><img src="http://www.projectwonderful.com/nojs.php?id=77009&type=3" style="width:160px;height:600px;border-style:none;" usemap="#admap77009" alt="" /></td></tr><tr><td style="background-color:#ffffff;" colspan="1"><center><a style="font-size:10px;color:#0000ff;text-decoration:none;line-height:1.2;font-weight:bold;font-family:Tahoma, verdana,arial,helvetica,sans-serif;text-transform: none;letter-spacing:normal;text-shadow:none;white-space:normal;word-spacing:normal;" href="http://www.projectwonderful.com/advertisehere.php?id=77009&type=3" target="_blank">Ads by Project Wonderful!  Your ad here, right now: $0</a></center></td></tr></table>
-</noscript>
-<!-- End Project Wonderful Ad Box Code -->
+<div id="OuterWrapper"> <div id="MainWrapper">
 
-    </div>
-<div id="OuterWrapper">
-      <div id="MainWrapper">
-
+<!-- Navigation -->
 
 <div id="Navigation">
 <!-- Navigation Left Side -->
@@ -65,35 +41,9 @@
 <!-- RSS Feed -->
 
 <div style="margin-right: 2px; font-size:0px;">
-  <a href="feed.xml">
+<!--  <a href="feed.xml">
     <img src = "rss.png" style="float:left;"/>
-  </a>
-</div>
-
-<!-- Social Media -->
-
-<div style="margin-right: 2px; height:32px; font-size:0px;">
-  <a href="http://reddit.com/r/qtje" title="Visit qtje on reddit">
-    <img src = "redditIcon.png" />
-  </a>
-  <a href="https://www.facebook.com/TheQTJE" title="Visit qtje on facebook">
-    <img src = "fbIcon.png" />
-  </a>
-<br>
-  <a href="https://plus.google.com/communities/107456650546190144692" title="Visit qtje on google+">
-    <img src = "gpIcon.png" />
-  </a>
-  <a href="https://twitter.com/the_real_qtje" title="Visit qtje on twitter">
-    <img src = "twitIcon.png" />
-  </a>
-</div>
-
-<!-- Vote Button -->
-
-<div style="margin-right: 2px; font-size:0px;">
-  <a href='http://topwebcomics.com/vote/19557/default.aspx' title='Vote for qtje on TopWebComics!'>
-    <img src = "voteButton.php" />
-  </a>
+  </a>-->
 </div>
 
 <!-- First/Prev Links -->
@@ -132,7 +82,7 @@ TODO: NEXT UPDATE HERE
 <div id="Main">
 <center>
 {% block body %}
-{% end block %}
+{% endblock %}
 </center>
 </div>
 

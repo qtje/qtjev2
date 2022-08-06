@@ -6,6 +6,7 @@ from django.conf import settings
 
 from django.contrib.auth.models import User
 
+import simple_history
 from simple_history.models import HistoricalRecords
 
 # Create your models here.
@@ -30,7 +31,6 @@ class Alias(models.Model):
 
 class OwnedHistory(models.Model):
     owner = models.ForeignKey(Alias, on_delete = models.CASCADE)   
-    history = HistoricalRecords()
 
 ### Comic Customization ###
 
@@ -41,6 +41,7 @@ class PageTemplate(OwnedHistory):
     def __str__(self):
         return f'{self.name} ({self.owner})'
 
+simple_history.register(PageTemplate)
 
 class PageTheme(OwnedHistory):
     name = models.TextField()
@@ -48,6 +49,7 @@ class PageTheme(OwnedHistory):
     def __str__(self):
         return f'{self.name} ({self.owner})'
 
+simple_history.register(PageTheme)
 
 ### Comic Structure ###
 
@@ -58,6 +60,7 @@ class ComicArc(OwnedHistory):
     def __str__(self):
         return f'{self.display_name} ({self.slug_name}) - {self.owner}'
 
+simple_history.register(ComicArc)
 
 
 class ComicPage(OwnedHistory):
@@ -80,6 +83,8 @@ class ComicPage(OwnedHistory):
     def __str__(self):
         return f'Page {self.page_key}'
 
+simple_history.register(ComicPage)
+
 class ComicLink(OwnedHistory):
     """
     The contents of a page link at a point in time
@@ -94,8 +99,11 @@ class ComicLink(OwnedHistory):
     from_page = models.ForeignKey(ComicPage, on_delete = models.CASCADE, related_name = 'links_from')
     to_page = models.ForeignKey(ComicPage, on_delete = models.CASCADE, related_name = 'links_to')
     kind = models.TextField(choices=LINK_KINDS)
-    
 
+    def __str__(self):
+        return f'{self.kind} {self.from_page} to {self.to_page} ({self.owner})'
+    
+simple_history.register(ComicLink)
 
 ### Forums ###
 

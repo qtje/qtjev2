@@ -1,0 +1,3 @@
+[submodule "dep/django-simple-history"]
+	path = dep/django-simple-history
+	url = git@github.com:jazzband/django-simple-history.git
