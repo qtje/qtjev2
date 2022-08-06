@@ -35,13 +35,25 @@ class ComicView(generic.DetailView):
         except IndexError:
             return None
                     
+        if result is not None:
 
-        template = Template(result.template.template)
+            result.querystring = self.request.GET.urlencode()
 
-        body = template.render(Context({'object': result}))
+            links_from = result.links_from.exclude(deleted_at__lte=date).exclude(created_at__gt=date)
 
-        result.body = body
-        return result
+            result.next_links = links_from.filter(kind='n')
+            result.prev_links = links_from.filter(kind='p')
+            result.first_links = links_from.filter(kind='f')
+
+            result.arc = result.arc.as_of(date)
+
+            template = Template(result.template.as_of(date).template)
+            theme = result.theme.as_of(date)   
+ 
+            body = template.render(Context({'object': result}))
+
+            result.body = body
+            return result
 
 def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")

@@ -49,28 +49,29 @@
 <!-- First/Prev Links -->
 
   <div style="float:right;">
+{% block left_links %}
 &lt;&lt; <a class="nav" href="{}">FIRST</a> &lt; <a rel="prev" class="nav" href="{}" >PREV</a>
+{% endblock %}
   </div>
 </div>
 
 <!-- Center divider -->
-
+{% block center_links %}
   <div style="width: 2%;">
     l
   </div>   
+{% endblock %}
 
 <!-- Navigation Right Side -->
 
 <div style="float:right; width:49%;">
   <div style="right:left;">
+{% block right_links %}
 <a rel="next" class="nav" href="{}">NEXT</a> &gt; <a class="nav" href="{}">CURR</a> &gt;&gt;
+{% endblock %}
   </div>
 
 <!-- Next Update -->
-
-<div style="float: right; text-align:right; font-size:13px; margin-right: 2px"> Next Update:<br>
-TODO: NEXT UPDATE HERE
-</div>
 
 </div>
 
@@ -89,7 +90,7 @@ TODO: NEXT UPDATE HERE
 <!-- Navigation Bottom -->
 
 <div id="bNavigation">
-<a href = "http://qtje.net">COMICS</a> l <a href = "http://qtje.net/?c=fan">FANCOMICS</a> l <a href = "http://qtje.net/archive.php">ARCHIVE</a> l <a href = "mailto:spam@qtje.net">CONTACT</a> l <a href="forum.php">FORUM</a> l <a href = "https://www.cafepress.com/qtje">SHOP</a>
+<a href = "{% url 'comic:authors' %}">AUTHORS</a> l <a href = "{% url 'comic:forum' %}">FORUM</a> l <a href = "{% url 'comic:archive' %}">GRAPH</a>
 </div>
 
 
@@ -100,8 +101,10 @@ TODO: NEXT UPDATE HERE
 <!-- Story Arc -->
 
 <div style="float: left; text-align:left; font-size:13px; margin-right: 2px"> 
+{% block meta_left %}
 Story Arc:<br>
 TODO: ARC
+{% endblock %}
 </div>
 
 <!-- Search Form -->
@@ -132,22 +135,13 @@ transcribe('apXeQVg67lWtc2151');
 <!-- End Ohnorobot.com code -->
 </div>
 
+<!-- Story Arc -->
 
+<div style="float: right; text-align:right; font-size:13px; margin-right: 2px"> 
+{% block meta_right %}
+{% endblock %}
 </div>
 
-<!-- Old bottom ad code -->
-
-</div>
-<div id="Botad">
-<center>
-<!-- Project Wonderful Ad Box Code -->
-<div id="pw_adbox_77011_5_0"></div>
-<script type="text/javascript"></script>
-<noscript><map name="admap77011" id="admap77011"><area href="http://www.projectwonderful.com/out_nojs.php?r=0&c=0&id=77011&type=5" shape="rect" coords="0,0,728,90" title="" alt="" target="_blank" /></map>
-<table cellpadding="0" cellspacing="0" style="width:728px;border-style:none;background-color:#ffffff;"><tr><td><img src="http://www.projectwonderful.com/nojs.php?id=77011&type=5" style="width:728px;height:90px;border-style:none;" usemap="#admap77011" alt="" /></td></tr><tr><td style="background-color:#ffffff;" colspan="1"><center><a style="font-size:10px;color:#0000ff;text-decoration:none;line-height:1.2;font-weight:bold;font-family:Tahoma, verdana,arial,helvetica,sans-serif;text-transform: none;letter-spacing:normal;text-shadow:none;white-space:normal;word-spacing:normal;" href="http://www.projectwonderful.com/advertisehere.php?id=77011&type=5" target="_blank">Ads by Project Wonderful!  Your ad here, right now: $0</a></center></td></tr></table>
-</noscript>
-<!-- End Project Wonderful Ad Box Code -->
-</center>
 
 </div>
 

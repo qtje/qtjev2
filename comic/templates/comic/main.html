@@ -1,5 +1,57 @@
 {% extends "comic/base.html" %}
 
+{% block left_links %}
+    {% for link in object.prev_links %}
+        <a href = "{% url 'comic:page' link.to_page.page_key %}?{{object.querystring}}" 
+            title="{{ link.owner.display_name }}"
+            >
+        &#x25C0;
+        </a>
+    {% endfor %}
+{% endblock %}
+
+{% block center_links %}
+        <a href = "{% url 'comic:page' '0000'  %}" 
+            >
+        &#x25A0;
+        </a>
+ 
+    {% for link in object.first_links %}
+        <a href = "{% url 'comic:page' link.to_page.page_key %}?{{object.querystring}}" 
+            title="{{ link.owner.display_name }}"
+            >
+        &#x25A0;
+        </a>
+    {% endfor %}
+{% endblock %}
+
+
+
+{% block right_links %}
+    {% for link in object.next_links %}
+        <a href = "{% url 'comic:page' link.to_page.page_key %}?{{object.querystring}}"
+            title="{{ link.owner.display_name }}"
+            >
+        &#x25B6;
+        </a>
+    {% endfor %}
+{% endblock %}
+
+
+
 {% block body %}
 {{ object.body }}
 {% endblock %}
+
+
+{% block meta_left %}
+Story Arc:<br>
+{{ object.arc.display_name }}
+{% endblock %}
+
+{% block meta_right %}
+Page Author:<br>
+{{ object.owner.display_name }}
+{% endblock %}
+
+

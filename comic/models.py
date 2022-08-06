@@ -18,9 +18,14 @@ of Historied models.
 
 I need to be able to hide created_at and hk fields in admin.
 
-I need a way of automatically updating links to follow pages when they update
-when a page saves, it should call save on all its attached links and point them
-at itself, the new instance?
+Need to actually implement themes, but this probably comes after finalizing layout
+
+Need to do actual layout.
+
+Need a set of pages for authors to use to make changes. I think I just need to take complete control over the forms available to authors rather than using the admin site. This way I can more clearly define the actions and author can take and create UX that's tailored to making those actions managable.
+
+Need to implement forums
+
 """
 
 
@@ -50,15 +55,21 @@ class OwnedHistory(models.Model):
         stamp = datetime.datetime.utcnow()
         force_update = kwargs.get('force_update', False)
         if not force_update and self.pk is not None:
-            print(f'An update was created')
             self.created_at = stamp
             self.pk = None
             self.id = None
-            print(dir(self))
             kwargs['force_insert'] = True
             super().save(*args, **kwargs)
         else:
             super().save(*args, **kwargs)
+
+
+    def as_of(self, date):
+        result =  self.__class__.objects.filter(
+                    hk = self.hk).order_by(
+                    '-created_at').filter(created_at__lte=date)[0]
+        return result
+    
 
 def history_post_save(**kwargs):
     """
@@ -95,10 +106,6 @@ class Alias(OwnedHistory):
         return f'{self.display_name} ({self.owner})'
 
 
-
-#class OwnedHistory(History):
-#    owner = models.ForeignKey(Alias, on_delete = models.CASCADE)   
-
 ### Comic Customization ###
 
 class PageTemplate(OwnedHistory):
@@ -107,14 +114,14 @@ class PageTemplate(OwnedHistory):
     template = models.TextField()
 
     def __str__(self):
-        return f'{self.name} ({self.owner})'
+        return f'{self.name} ({self.owner}) as of {self.created_at}'
 
 class PageTheme(OwnedHistory):
     owner = models.ForeignKey(Alias, on_delete = models.CASCADE, related_name = 'owned_themes')
     name = models.TextField()
 
     def __str__(self):
-        return f'{self.name} ({self.owner})'
+        return f'{self.name} ({self.owner}) as of {self.created_at}'
 
 ### Comic Structure ###
 
@@ -141,17 +148,64 @@ class ComicPage(OwnedHistory):
     image = models.ImageField()
     alt_text = models.TextField()
 
+    transcript = models.TextField(blank=True, null=True)
+
     template = models.ForeignKey(PageTemplate, on_delete = models.CASCADE)
 
     theme = models.ForeignKey(PageTheme, on_delete = models.CASCADE)
 
+    def save(self, *args, **kwargs):
+        print(f'A Page history was saved: {self} {kwargs=}')
+        stamp = datetime.datetime.utcnow()
+        force_update = kwargs.get('force_update', False)
+        if not force_update and self.pk is not None:
+            self.created_at = stamp
+
+            
+            self.old_from = self.links_from.all()
+            self.old_to = self.links_to.all()
+ 
+            self.pk = None
+            self.id = None
+ 
+            kwargs['force_insert'] = True
+            models.Model.save(self, *args, **kwargs)
+        else:
+            models.Model.save(self, *args, **kwargs)
+
     def __str__(self):
+        self.old_from = self.links_from.all()
+        self.old_to = self.links_to.all()
+
         return f'Page {self.page_key} as of {self.created_at}'
 
-class ComicLink(OwnedHistory):
+def page_post_save(**kwargs):
+    """
+    When a new History instance is created, and the hk hasn't been set
+    (it should not be set manually), the hk will be updated to match the pk
+    """
+    instance = kwargs['instance']
+    
+    if isinstance(instance, ComicPage):
+        for entry in instance.old_from:
+            if entry.deleted_at is None:
+                entry.from_page = instance
+                entry.save()
+        for entry in instance.old_to:
+            if entry.deleted_at is None:
+                entry.to_page = instance
+                entry.save()
+
+model_signals.post_save.connect(page_post_save)
+
+
+
+class ComicLink(models.Model):
     """
     The contents of a page link at a point in time
     """
+    created_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
     owner = models.ForeignKey(Alias, on_delete = models.CASCADE, related_name = 'owned_links')
     LINK_KINDS = (
         ('n', 'next'),
