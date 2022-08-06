@@ -105,7 +105,7 @@ class OwnedHistory(models.Model):
             raise cls.DoesNotExist()
 
     @classmethod
-    def get_all_latest(cls, user=None, key=None):
+    def get_all_latest(cls, user=None, key=None, date=None):
         """
         user, if provided, filters results that are owned by user
         key, if specified, is the hk to use. Defaults to cls.default_hk
@@ -115,6 +115,8 @@ class OwnedHistory(models.Model):
         result = cls.objects
         if user is not None:
             result = cls.filter_owner(result, user)
+        if date is not None:
+            result = result.filter(created_at__lte=date)
         result = result.order_by(f'-{key}', '-created_at')
     
         res_map = {}
@@ -185,18 +187,19 @@ class Alias(OwnedHistory, Searchable):
     conflict_icon = '⚠'
     warning = f'<span title="This name is used by multiple authors">{conflict_icon}</span>'
 
-    def is_conflicted(self):
-        count = Alias.objects.filter(display_name=self.display_name).count()
-        return count > 1
+    def is_conflicted(self, date):
+        vals =  Alias.get_all_latest(date=date)
+        vals = list(filter(lambda x: x.display_name == self.display_name, vals))
+        return len(vals) > 1
 
     def is_owned_by(self, user):
         return self.owner.user == user
 
-    def full_display_name(self):
-        if not self.is_conflicted():
-            return self.display_name
-        else:
-            return self.conflict_icon + ' ' + self.display_name
+#    def full_display_name(self):
+#        if not self.is_conflicted():
+#            return self.display_name
+#        else:
+#            return self.conflict_icon + ' ' + self.display_name
 
 
     def sanitize(self, date):
@@ -207,7 +210,7 @@ class Alias(OwnedHistory, Searchable):
         result = {}
         self = self.as_of(date)
         display_name_safe = django.utils.html.conditional_escape(self.display_name)
-        if not self.is_conflicted():
+        if not self.is_conflicted(date):
             result['simple_name'] = display_name_safe
             result['html_name'] = display_name_safe
         else:

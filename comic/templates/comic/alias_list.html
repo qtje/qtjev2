@@ -31,14 +31,14 @@
     </td>
     <td>
     {% if alias.first %}
-    <a href = "{{ alias.first.get_absolute_url }}">
+    <a href = "{{ alias.first.get_absolute_url }}{{querystring}}">
     {{ alias.first.page_key }}: {{alias.first.title}}
     </a>
     {% endif %}
     </td>
     <td>
     {% if alias.last %}
-    <a href = "{{ alias.last.get_absolute_url }}">
+    <a href = "{{ alias.last.get_absolute_url }}{{querystring}}">
     {{ alias.last.page_key }}: {{alias.last.title}}
     </a>
     {% endif %}

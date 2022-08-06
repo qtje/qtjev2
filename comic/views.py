@@ -51,6 +51,16 @@ def process_date(date):
             date = date.replace(tzinfo=datetime.timezone.utc)
     return date
 
+def get_date_from_request(request):
+    date = request.GET.get('date', None)
+    return process_date(date)        
+
+def get_querystring_from_request(request):
+    querystring = request.GET.urlencode()
+    if querystring != '':
+        querystring = '?' + querystring
+    return querystring
+
 class ComicView(generic.DetailView):
     model = ComicPage 
     template_name = 'comic/main.html'
@@ -60,7 +70,7 @@ class ComicView(generic.DetailView):
         date = self.request.GET.get('date', None)
         page_key_str = self.kwargs.get('pk', '0')
 
-        self.date = date = process_date(date)
+        self.date = date = get_date_from_request(self.request)
         try:
             result = models.ComicPage.get_view_page(date, page_key_str)
         except ValueError:
@@ -76,10 +86,7 @@ class ComicView(generic.DetailView):
         if instance is None:
             raise django.http.Http404('No such page at this time.')
 
-        querystring = self.request.GET.urlencode()
-        if querystring != '':
-            querystring = '?' + querystring
-        result['querystring'] = querystring
+        result['querystring'] = get_querystring_from_request(self.request)
 
         result['body'] = instance.render_template(self.date, context=result)
         result['theme_values'] = instance.render_theme(self.date, context=result)
@@ -159,13 +166,19 @@ class AuthorsView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
+        date = process_date(None)#get_date_from_request(self.request)
+
+        result['querystring'] = ''#get_querystring_from_request(self.request)
+
         object_list = {}
         names_list = []
         for entry in result['object_list']:
-            pages = models.ComicPage.objects.filter(owner = entry).order_by('-page_key')
+            entry = entry.as_of(date)
+            pages = models.ComicPage.objects.filter(owner__hk = entry.hk).order_by('-page_key')
             if not entry.display_name in object_list.keys():
+                saned = entry.sanitize(date)
                 author_entry = {
-                    'name': entry.sanitize(),
+                    'name': saned,
                     }
                 if len(pages) > 0:
                     author_entry['last'] = pages[0]
@@ -174,9 +187,9 @@ class AuthorsView(generic.ListView):
             else:
                 author_entry = object_list[entry.display_name]
                 if len(pages) > 0:
-                    if pages[0] > author_entry['last']:
+                    if pages[0].page_key > author_entry['last'].page_key:
                         author_entry['last'] = pages[0]
-                    if pages[len(pages)-1] < author_entry['first']:
+                    if pages[len(pages)-1].page_key < author_entry['first'].page_key:
                         author_entry['first'] = pages[len(pages)-1]
                 
 
