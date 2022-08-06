@@ -1,0 +1,62 @@
+{% extends "comic/base.html" %}
+
+
+{% block left_links %}
+{% endblock %}
+
+{% block center_links %}
+<div class="BigTextWrap">
+    Authors
+</div>
+{% endblock %}
+
+{% block right_links %}
+{% endblock %}
+
+{% block nav_right %}
+{% endblock %}
+
+
+{% block body %}
+<table class = "ListTable">
+<tr>
+<td> Author </td>
+<td> First Page </td>
+<td> Last Page </td>
+</tr>
+{% for alias in object_list %}
+<tr>
+    <td>
+    {{ alias.full_display_name|safe }}
+    </td>
+    <td>
+    {% if alias.first %}
+    <a href = "{{ alias.first.get_absolute_url }}">
+    {{ alias.first.page_key }}: {{alias.first.title}}
+    </a>
+    {% endif %}
+    </td>
+    <td>
+    {% if alias.last %}
+    <a href = "{{ alias.last.get_absolute_url }}">
+    {{ alias.last.page_key }}: {{alias.last.title}}
+    </a>
+    {% endif %}
+    </td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}
+
+
+{% block meta_left %}
+{% endblock %}
+
+{% block meta_right %}
+{% endblock %}
+
+
+{% block forums %}
+{% endblock %}
+
+
