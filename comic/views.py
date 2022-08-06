@@ -101,8 +101,39 @@ def do_forum_post(request):
     return HttpResponseRedirect(return_path)
 
 #
-# 
+# Additional pages for users
 #
+
+class AuthorsView(generic.ListView):
+    model = models.Alias
+
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+        object_list = {}
+        names_list = []
+        for entry in result['object_list']:
+            pages = models.ComicPage.objects.filter(owner = entry).order_by('-page_key')
+            if not entry.display_name in object_list.keys():
+                author_entry = {
+                    'full_display_name': entry.full_display_name(),
+                    }
+                if len(pages) > 0:
+                    author_entry['last'] = pages[0]
+                    author_entry['first'] = pages[len(pages)-1]
+                object_list[entry.display_name] = (author_entry)
+            else:
+                author_entry = object_list[entry.display_name]
+                if len(pages) > 0:
+                    if pages[0] > author_entry['last']:
+                        author_entry['last'] = pages[0]
+                    if pages[len(pages)-1] < author_entry['first']:
+                        author_entry['first'] = pages[len(pages)-1]
+                
+
+        result['object_list'] = object_list.values()
+
+        return result
+        
 
 #
 # Entity Create/Edit Views (For Authors)

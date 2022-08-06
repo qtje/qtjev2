@@ -175,12 +175,20 @@ class Alias(OwnedHistory, Searchable):
     display_name = models.TextField()
     owner = models.ForeignKey(Author, on_delete = models.CASCADE, related_name = 'aliases')
 
+    warning = '<span title="This author name is used by multiple authors">&#x26A0;</span>'
+
     def is_conflicted(self):
         count = Alias.objects.filter(display_name=self.display_name).count()
         return count > 1
 
     def is_owned_by(self, user):
         return self.owner.user == user
+
+    def full_display_name(self):
+        if not self.is_conflicted():
+            return self.display_name
+        else:
+            return self.warning + ' ' + self.display_name
 
     @staticmethod
     def filter_owner(queryset, user):
@@ -356,7 +364,6 @@ class ComicPage(OwnedHistory, Searchable):
             theme_dict = theme.get_templates()
 
         theme_values = {k: v.render(context) for k,v in theme_dict.items()}
-        print(theme_values)
 
         return theme_values
 

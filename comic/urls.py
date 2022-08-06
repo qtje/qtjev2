@@ -7,7 +7,7 @@ from . import views
 app_name = 'comic'
 
 urlpatterns = [
-    path('authors', views.index, name='authors'),
+    path('authors', views.AuthorsView.as_view(), name='authors'),
     path('forum', views.index, name='forum'),
     path('archive', views.index, name='archive'),
     path('post', views.do_forum_post),

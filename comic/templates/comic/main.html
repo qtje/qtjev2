@@ -85,10 +85,7 @@
 
 <div class="SmallTextWrap">
 {{ object.title }}<br>
-{% if object.owner.is_conflicted %}
-<span title="This author name is used by multiple authors">&#x26A0;</span>
-{% endif %}
-{{object.owner.display_name}} 
+{{object.owner.full_display_name|safe}}
 </div>
 
 {% endif %}
