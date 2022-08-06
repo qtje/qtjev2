@@ -387,7 +387,6 @@ class ComicPage(OwnedHistory, Searchable):
             result = pages[0]
             result.first_version = pages.order_by('created_at')[0]
         except ValueError:
-            #TODO Handle bad page key
             raise
         except IndexError:
             return None

@@ -4,6 +4,9 @@ import dateutil.parser
 from django.shortcuts import render
 
 from django.http import HttpResponse, HttpResponseRedirect
+import django.http
+
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 
 from django.views import generic
 
@@ -48,7 +51,10 @@ class ComicView(generic.DetailView):
         page_key_str = self.kwargs.get('pk', '0')
 
         self.date = date = process_date(date)
-        result = models.ComicPage.get_view_page(date, page_key_str)
+        try:
+            result = models.ComicPage.get_view_page(date, page_key_str)
+        except ValueError:
+            raise django.http.Http404(f'Malformed page key {page_key_str}')
 
         return result
 
@@ -56,6 +62,9 @@ class ComicView(generic.DetailView):
         result = super().get_context_data(**kwargs)
 
         instance = result['object']
+
+        if instance is None:
+            raise django.http.Http404('No such page at this time.')
 
         result['querystring'] = self.request.GET.urlencode()
 
@@ -151,10 +160,17 @@ class PageEditView(LoginRequiredMixin, generic.edit.UpdateView):
         page_key_str = self.kwargs.get('pk', '0')
 
         date = process_date(None)
-        result = models.ComicPage.get_view_page(date, page_key_str)
+        try:
+            result = models.ComicPage.get_view_page(date, page_key_str)
+        except ValueError:
+            result = None
 
-        assert result.is_owned_by(self.request.user)
+        if result is None:
+             raise django.http.Http404('No such page')           
 
+        if not result.is_owned_by(self.request.user):
+            raise PermissionDenied
+ 
         return result
 
     def get_form_kwargs(self):
@@ -191,9 +207,13 @@ class GenericEditView(LoginRequiredMixin, generic.edit.UpdateView):
     template_name = 'comic/generic_edit.html'
  
     def get_object(self, queryset = None):
-        result = self.model.get_latest(self.kwargs['hk'])
-        #TODO: Make this more better
-        assert result.is_owned_by(self.request.user)
+        try:
+            result = self.model.get_latest(self.kwargs['hk'])
+        except ObjectDoesNotExist:
+            raise django.http.Http404('No such object')
+
+        if not result.is_owned_by(self.request.user):
+            raise PermissionDenied
         return result
 
     def get_form_kwargs(self):
@@ -226,9 +246,13 @@ class LinkDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
     template_name = 'comic/link_delete.html'
 
     def get_object(self, queryset = None):
-        result = self.model.objects.get(id=self.kwargs['pk'])
-        #TODO: Make this more better
-        assert result.is_owned_by(self.request.user)
+        try:
+            result = self.model.objects.get(id=self.kwargs['pk'])
+        except ObjectDoesNotExist:
+             raise django.http.Http404('No such link')
+
+        if not result.is_owned_by(self.request.user):
+            raise PermissionDenied
         return result
 
 
