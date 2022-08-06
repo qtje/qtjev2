@@ -84,10 +84,28 @@ class MyForm(forms.ModelForm):
         if not instance is None:
             self.initial[name] = instance.search_key()
 
+    def add_owner_field(self, user, instance):
+        default = 'auto'
+        if instance is not None:
+            default = instance.owner
+        self.add_history_field('owner', user, models.Alias, default)
+        self.order_fields(['owner'])
+
+    def get_page_from_field(self, field_name):
+        raw = self.data[field_name]
+        try:
+            result = self.fields[field_name].get_instance(raw)
+        except:
+            return None
+        return result
+
+    def get_owner(self):
+        return self.cleaned_data['owner']
+
     def save(self, commit=True):
         if self.is_create:
             self.instance.hk = self.Meta.model.get_next_hk()
-            owner = models.Author.objects.get(user=self.request.user)
+            owner = self.get_owner()
             self.instance.owner_id = owner.id
 
         instance = super().save(commit)
@@ -117,8 +135,7 @@ class PageEditForm(MyForm):
         self.add_history_field('template', None, models.PageTemplate, defaults.get('template','auto'))
         self.add_history_field('theme', None, models.PageTheme, defaults.get('theme', 'auto'))
         self.add_history_field('arc', None, models.ComicArc, defaults.get('arc', 'auto'))
-        self.add_history_field('owner', user, models.Alias, defaults.get('owner', 'auto'))
-
+        self.add_owner_field(user, instance)
 
         return result
 
@@ -160,17 +177,14 @@ class PageCreateForm(PageEditForm):
     def is_valid(self):
         self.prev_page = None
 
-        prev_page_raw = self.data['prev_page_owner']
-        try:
-            prev_page = self.fields['prev_page_owner'].get_instance(prev_page_raw)
-        except:
-            prev_page = None
-        self.prev_page = prev_page
+        self.prev_page = prev_page = self.get_page_from_field('prev_page_owner')
 
         if self.data.get('reciprocate_owner', False):
             if prev_page is not None:
                 if not prev_page.can_link('n', self.request.user):
-                    self.add_error('reciprocate_owner', f'The page {prev_page.search_key()} already has too many next links.')
+                    self.add_error('reciprocate_owner', f'{prev_page.search_string()} already has too many next links.')
+            else:
+                self.add_error('prev_page_owner', "If you really don't want to link to a previous page, uncheck reciprocate")
 
         return super().is_valid()
 
@@ -199,6 +213,80 @@ class PageCreateForm(PageEditForm):
 
 
 #
+# Link create
+#
+
+class LinkCreateForm(MyForm):
+
+    is_create = True
+    post_url = 'comic:edit_link'
+
+    button = 'Create Link'
+    heading = 'Creating new link'
+
+    reciprocate = forms.BooleanField(initial = True, required=False)   
+    kind = forms.ChoiceField(choices = [('n', 'Next'), ('p', 'Previous')]) 
+
+    def __init__(self, **kwargs):
+        instance = kwargs['instance']
+        result = super().__init__(**kwargs)
+
+        user = self.request.user
+        self.add_owner_field(user, instance)
+        self.add_history_field('from_page', None, models.ComicPage, None, required=False)
+        self.add_history_field('to_page', None, models.ComicPage, None, required=False)
+
+
+        return result
+
+    def is_valid(self):
+
+        self.from_page = from_page = self.get_page_from_field('from_page')
+        self.to_page = to_page = self.get_page_from_field('to_page')
+
+        kind = self.data['kind']
+
+        error_string = '{} already has too many links of the selected kind.'
+
+        if from_page is not None and not from_page.can_link(kind, self.request.user):
+            self.add_error('from_page', error_string.format(from_page.search_string()))
+
+        if self.data.get('reciprocate', False):
+            self.rec_kind = rec_kind = {'n':'p', 'p':'n'}[kind]
+            if to_page is not None and not to_page.can_link(rec_kind, self.request.user):
+                self.add_error('to_page', error_string.format(to_page.search_string()))
+                self.add_error('reciprocate', error_string.format(to_page.search_string()))
+
+        return super().is_valid()
+
+
+    def save(self, commit=True):
+        owner = self.cleaned_data['owner']
+
+        instance = forms.ModelForm.save(self, commit)
+
+        if not commit: return instance
+
+        if self.cleaned_data.get('reciprocate', False):
+            link = models.ComicLink(kind=self.rec_kind,
+                    from_page_id = self.to_page.id, 
+                    to_page_id = self.from_page.id, 
+                    owner=owner)
+            link.save()
+
+        return instance
+
+
+
+    class Meta:
+        model = models.ComicLink
+        exclude = ['hk', 'deleted_at']
+        widgets = {
+        }
+
+
+
+#
 # Arc edit
 #
 
@@ -213,11 +301,14 @@ class ArcEditForm(MyForm):
         instance = kwargs['instance']
         if not self.is_create:
             self.heading = f'Editing story arc {instance.display_name} {(instance.slug_name)}'
-        return super().__init__(**kwargs)
+        result = super().__init__(**kwargs)
+        self.add_owner_field(self.request.user, instance)
+        return result
+
 
     class Meta:
         model = models.ComicArc
-        exclude = ['hk', 'owner']
+        exclude = ['hk']
         widgets = {
             'slug_name': forms.TextInput,
             'display_name': forms.TextInput
@@ -249,6 +340,9 @@ class AliasEditForm(MyForm):
             self.heading = f'Editing alias {instance.display_name}'
         return super().__init__(**kwargs)
 
+    def get_owner(self):
+        return models.Author.objects.get(user=self.request.user)
+
     class Meta:
         model = models.Alias
         exclude = ['hk', 'owner']
@@ -275,11 +369,15 @@ class TemplateEditForm(MyForm):
 
     button = 'Update Template'
 
+    field_order = ['owner', 'name', 'template']
+
     def __init__(self, **kwargs):
         instance = kwargs['instance']
         if not self.is_create:
             self.heading = f'Editing template {instance.name}'
-        return super().__init__(**kwargs)
+        result = super().__init__(**kwargs)
+        self.add_owner_field(self.request.user, instance)
+        return result
 
     def is_valid(self):
         template = self.data['template']
@@ -325,7 +423,9 @@ class ThemeEditForm(MyForm):
         instance = kwargs['instance']
         if not self.is_create:
             self.heading = f'Editing theme {instance.name}'
-        return super().__init__(**kwargs)
+        result = super().__init__(**kwargs)
+        self.add_owner_field(self.request.user, instance)
+        return result
 
     def is_valid(self):
 

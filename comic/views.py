@@ -214,6 +214,11 @@ class GenericCreateView(LoginRequiredMixin, generic.edit.CreateView):
         result['request'] = self.request
         return result
 
+class LinkCreateView(GenericCreateView):
+    success_url = reverse_lazy('comic:list_links')
+    model = models.ComicLink
+    form_class = forms.LinkCreateForm
+
 class ArcEditView(GenericEditView):
     success_url = reverse_lazy('comic:list_arcs')
     model = models.ComicArc
@@ -318,7 +323,7 @@ class PageEditListView(EditListView):
 class LinkEditListView(EditListView):
     model = models.ComicLink
     edit_url = 'comic:page'
-    new_url = 'comic:index'
+    new_url = 'comic:edit_link'
     new_link_text = 'New Link'
 
     def render_table_map(self, object_list):
