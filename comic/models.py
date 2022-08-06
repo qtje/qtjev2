@@ -9,6 +9,8 @@ from django.contrib.auth.models import User
 
 from django.template import Template, Context
 
+from django.urls import reverse
+
 # Create your models here.
 
 """
@@ -317,6 +319,9 @@ class ComicPage(OwnedHistory, Searchable):
 
         return f'Page {self.page_key} as of {self.created_at}'
 
+    def get_absolute_url(self):
+        return reverse('comic:page', kwargs={'pk': self.page_key})
+
     @classmethod
     def fmt_page_key(cls, page_key):
         return f'{page_key:04x}'
@@ -343,14 +348,20 @@ def page_post_save(**kwargs):
     instance = kwargs['instance']
     
     if isinstance(instance, ComicPage):
-        for entry in instance._old_from:
-            if entry.deleted_at is None:
-                entry.from_page = instance
-                entry.save()
-        for entry in instance._old_to:
-            if entry.deleted_at is None:
-                entry.to_page = instance
-                entry.save()
+        try:
+            for entry in instance._old_from:
+                if entry.deleted_at is None:
+                    entry.from_page = instance
+                    entry.save()
+        except AttributeError:
+            pass #in the event there aren't any old from links
+        try:
+            for entry in instance._old_to:
+                if entry.deleted_at is None:
+                    entry.to_page = instance
+                    entry.save()
+        except AttributeError:
+            pass
 
 model_signals.post_save.connect(page_post_save)
 

@@ -44,7 +44,7 @@ class HistoryModelField(forms.Field):
         self.model = model
         super().__init__(**kwargs)
 
-    def clean(self, value):
+    def get_instance(self, value):
         hk = self.model.get_hk(value)
         if hk is not None:
             try:
@@ -57,6 +57,8 @@ class HistoryModelField(forms.Field):
             return None
         return instance
 
+    def clean(self, value):
+        return self.get_instance(value)
 
 class PageEditForm(forms.ModelForm):
 
@@ -96,9 +98,15 @@ class PageEditForm(forms.ModelForm):
         return result
 
     def is_valid(self):
-        
-        self.add_error(None, 'Nope')
         return super().is_valid()
+
+    def save(self, commit=True):
+        self.instance.arc_id = self.cleaned_data['arc'].id
+        self.instance.owner_id = self.cleaned_data['owner'].id
+        self.instance.template_id = self.cleaned_data['template'].id
+        self.instance.theme_id = self.cleaned_data['theme'].id
+
+        return super().save(commit)
 
     class Meta:
         model = models.ComicPage
@@ -115,25 +123,50 @@ class PageCreateForm(PageEditForm):
     is_create = True
 
     def __init__(self, **kwargs):
+        
         result = super().__init__(**kwargs)
-
+        self.initial['page_key'] = models.ComicPage.get_next_page_key()
         self.add_history_field('prev_page_owner', None, models.ComicPage, None, required=False)
 
         return result
 
     def is_valid(self):
-        if self.data.get('reciprocate_owner', False):
-            prev_page_raw = self.data['prev_page_owner']
-            try:
-                prev_page = self.fields['prev_page_owner'].clean(prev_page_raw)
-            except:
-                prev_page = None
+        self.prev_page = None
 
+        prev_page_raw = self.data['prev_page_owner']
+        try:
+            prev_page = self.fields['prev_page_owner'].get_instance(prev_page_raw)
+        except:
+            prev_page = None
+        self.prev_page = prev_page
+
+        if self.data.get('reciprocate_owner', False):
             if prev_page is not None:
                 if not prev_page.can_link('n', self.request.user):
                     self.add_error('reciprocate_owner', f'The page {prev_page.search_key()} already has too many next links.')
 
         return super().is_valid()
 
+    def save(self, commit=True):
+        owner = self.cleaned_data['owner']
+
+        instance = super().save(commit)
+
+        if not commit: return instance
+
+        if self.prev_page is not None:
+            link = models.ComicLink(kind='p', 
+                    from_page_id = instance.id, 
+                    to_page_id = self.prev_page.id, 
+                    owner=owner)
+            link.save()
+            if self.cleaned_data['reciprocate_owner']:
+                link = models.ComicLink(kind='n', 
+                        to_page_id = instance.id, 
+                        from_page_id = self.prev_page.id, 
+                        owner=owner)
+                link.save()
+
+        return instance
 
 

@@ -171,14 +171,13 @@ class PageCreateView(LoginRequiredMixin, generic.edit.CreateView):
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
+        if 'data' in result.keys():
+            result['data'] = result['data'].copy()
+            result['data']['page_key'] = models.ComicPage.get_next_page_key()
         result['request'] = self.request
         return result
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
-        page_key = models.ComicPage.get_next_page_key()
-        print(page_key)
-        #TODO: update request with next available page key
         return super().post(request, *args, **kwargs)
 
 
@@ -194,8 +193,8 @@ class EditListView(LoginRequiredMixin, generic.ListView):
     hk = 'hk'
 
     view_url = None
-    edit_url = 'comic:page'
-    new_url = 'comic:index'
+    edit_url = 'comic:edit_page'
+    new_url = 'comic:create_page'
     new_link_text = 'New Whatever'
 
     def get_queryset(self):
@@ -218,7 +217,7 @@ class PageEditListView(EditListView):
     hk = 'page_key'
     view_url = 'comic:page'
     edit_url = 'comic:edit_page'
-    new_url = 'comic:index'
+    new_url = 'comic:create_page'
     new_link_text = 'New Page'
 
     def render_table_map(self, object_list):
