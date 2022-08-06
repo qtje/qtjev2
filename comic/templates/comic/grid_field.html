@@ -1,7 +1,6 @@
-<div class="AFLabel">
+<div class="AFLabel{% if field.errors %} AFFormError {% endif %}">
     {% include 'comic/field_error.html' with errors=field.errors %} 
-    {% if field.errors%}{% endif %}
-    <label for="{{field.id_for_label}}" {% if field.errors %} class="AFFormError" {% endif %}>{{ label }}</label>
+    <label for="{{field.id_for_label}}">{{ label }}</label>
 </div>
 <div class="AFField">
    {{ field }}

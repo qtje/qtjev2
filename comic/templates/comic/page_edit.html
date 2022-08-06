@@ -32,7 +32,7 @@ Creating new page
 </div>
 <div class="AFField">
     {{form.page_key.value}}
-    <span title="When creating a new page, this is the next available page number at the time of submission, which might not be the value displayed here.">&#x24D8;</span>
+    <span title="When a page is created, it will use the next available page number. This value is the next available page number at the time this page was loaded, but might not be at the time of submission">&#x24D8;</span>
  
     <input type="hidden" value="{{ form.page_key.value }}" id="{{ form.page_key.id_for_label}}">
 </div>
@@ -45,7 +45,7 @@ Creating new page
 <div class="AuthorFormDivider"></div>
 
 
-<div class="AFLabel">
+<div class="AFLabel {% if field.errors %} AFFormError {% endif %}">
    {% include 'comic/field_error.html' with errors=form.prev_page_owner.errors %} 
     <label for="{{form.prev_page_owner.id_for_label}}" {% if form.prev_page_owner.errors %} class="AFFormError" {% endif %}>Previous Page</label>
 </div>

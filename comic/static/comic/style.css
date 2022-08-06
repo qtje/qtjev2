@@ -293,7 +293,6 @@ div.SideUnit
 .AFError
 {
     position: relative; 
-    color: #007700;
 }
 .AFErrorTT
 {
@@ -335,8 +334,13 @@ display:block;
 }
 
 .AFLabel {
-    text-align: right;
-    align-self: self-end;
+    border: 1px solid black;
+    padding: 4px;
+    align-self: stretch;
+    justify-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: right;
 }
 
 .AFField {
