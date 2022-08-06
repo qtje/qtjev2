@@ -6,7 +6,11 @@
 
 {% block center_links %}
 <div class="BigTextWrap">
+{% if form.is_create %}
 Creating new page
+{% else %}
+Editing Page {{ form.page_key.value }}
+{% endif %}
 </div>
 {% endblock %}
 
@@ -44,7 +48,7 @@ Creating new page
 
 <div class="AuthorFormDivider"></div>
 
-
+{% if form.prev_page_owner %}
 <div class="AFLabel {% if field.errors %} AFFormError {% endif %}">
    {% include 'comic/field_error.html' with errors=form.prev_page_owner.errors %} 
     <label for="{{form.prev_page_owner.id_for_label}}" {% if form.prev_page_owner.errors %} class="AFFormError" {% endif %}>Previous Page</label>
@@ -62,8 +66,9 @@ Creating new page
  
 </div>
 
-
 <div class="AuthorFormDivider"></div>
+{% endif %}
+
 
 {% include 'comic/grid_field.html' with field=form.template label="Template" %}
 {% include 'comic/grid_field.html' with field=form.theme label="Theme" %}

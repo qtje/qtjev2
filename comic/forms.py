@@ -60,7 +60,7 @@ class HistoryModelField(forms.Field):
 
 class PageEditForm(forms.ModelForm):
 
-    reciprocate_owner = forms.BooleanField(initial = True)
+    is_create = False
 
     def add_history_field(self, name, user, model, instance, choices = None, **kwargs):
         if choices is None:
@@ -82,7 +82,6 @@ class PageEditForm(forms.ModelForm):
         self.add_history_field('arc', None, models.ComicArc, instance.arc)
         self.add_history_field('owner', user, models.Alias, instance.owner)
 
-        self.add_history_field('prev_page_owner', None, models.ComicPage, None, required=False)
 
         return result
 
@@ -99,4 +98,16 @@ class PageEditForm(forms.ModelForm):
             'alt_text': forms.TextInput,
         }
 #        fields = ['title', 'arc', 'image', 'alt_text']
+
+class PageCreateForm(PageEditForm):
+    reciprocate_owner = forms.BooleanField(initial = True)   
+    is_create = True
+
+    def __init__(self, **kwargs):
+        result = super().__init__(**kwargs)
+
+        self.add_history_field('prev_page_owner', None, models.ComicPage, None, required=False)
+
+        return result
+
 

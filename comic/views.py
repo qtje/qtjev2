@@ -140,7 +140,7 @@ class PageEditView(LoginRequiredMixin, generic.edit.UpdateView):
 
     model = ComicPage
     template_name = 'comic/page_edit.html'
-    form_class = forms.PageEditForm
+    form_class = forms.PageCreateForm
  
     def get_object(self, queryset = None):
 
@@ -158,7 +158,6 @@ class PageEditView(LoginRequiredMixin, generic.edit.UpdateView):
 
 
     def post(self, request, *args, **kwargs):
-        print('boop')
         return super().post(request, *args, **kwargs)
  
 
