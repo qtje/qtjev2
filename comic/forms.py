@@ -86,6 +86,7 @@ class PageEditForm(forms.ModelForm):
         return result
 
     def is_valid(self):
+        
         self.add_error(None, 'Nope')
         return super().is_valid()
 
@@ -111,7 +112,16 @@ class PageCreateForm(PageEditForm):
         return result
 
     def is_valid(self):
-        self.add_error('reciprocate_owner', 'Test')
+        prev_page_raw = self.data['prev_page_owner']
+        if prev_page_raw is not None:
+            try:
+                prev_page = self.fields['prev_page_owner'].clean(prev_page_raw)
+            except:
+                pass #This error will get caught later
+            else:
+                if not prev_page.can_link('n', self.request.user):
+                    self.add_error('reciprocate_owner', f'The page {prev_page.search_key()} already has too many next links.')
+
         return super().is_valid()
 
 

@@ -299,13 +299,20 @@ div.SideUnit
 color: black;
 display: none;
 position: absolute;
-left: -2px;
 border: 1px solid black;
 z-index: 10;
 width: max-content;
 padding: 4px;
 padding-bottom: 0px;
 background: #ffff;
+}
+.AFEAlignL
+{
+left: -2px;
+}
+.AFEAlignR
+{
+right: 2px;
 }
 
 .errorlist {

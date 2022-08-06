@@ -60,7 +60,7 @@ Editing Page {{ form.page_key.value }}
     </div>
     <div {% if form.reciprocate_owner.errors %}class="AFFormError"{% endif %}>
        {{ form.reciprocate_owner}}
-    {% include 'comic/field_error.html' with errors=form.reciprocate_owner.errors %} 
+    {% include 'comic/field_error.html' with errors=form.reciprocate_owner.errors right=True %} 
     <label for="{{form.reciprocate_owner.id_for_label}}">Reciprocate</label> 
     <span title="A reciprocal 'next' link will be created from the previous page to this page. If this box is not checked, then the specified previous page will not link to this page.">&#x24D8;</span>
     </div>

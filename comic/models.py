@@ -25,6 +25,8 @@ That stuff is all in https://docs.djangoproject.com/en/4.0/topics/auth/default/#
 Need to implement authors and forum views
 
 Need to implement rss feeds
+
+Need to restrict alias template rendering so it always includes the disputed annotation.
 """
 
 
@@ -71,6 +73,9 @@ class OwnedHistory(models.Model):
                     hk = self.hk).order_by(
                     '-created_at').filter(created_at__lte=date)[0]
         return result
+
+    def is_owned_by(self, user):
+        return self.owner.owner.user == user
 
     @staticmethod
     def filter_owner(queryset, user):
@@ -163,6 +168,9 @@ class Alias(OwnedHistory, Searchable):
     def is_conflicted(self):
         count = Alias.objects.filter(display_name=self.display_name).count()
         return count > 1
+
+    def is_owned_by(self, user):
+        return self.owner.user == user
 
     @staticmethod
     def filter_owner(queryset, user):
@@ -281,6 +289,25 @@ class ComicPage(OwnedHistory, Searchable):
         else:
             models.Model.save(self, *args, **kwargs)
 
+    def can_link(self, kind, user):
+        """
+        Return True if the given user is allowed to add a from link of the
+        given type to this page.
+        kind is 'p' or 'n'.
+        """
+        assert kind in ['n', 'p']
+        existing = self.links_from.filter(kind=kind).all()
+        page_user = self.owner.owner.user
+        if page_user == user:
+            existing = list(filter(lambda x: x.is_owned_by(user), existing))
+        else:
+            existing = list(filter(lambda x: not x.is_owned_by(page_user), existing))
+
+        print(f'{existing=}')
+
+        if len(existing) < 2: 
+            return True
+
     def search_string(self):
         return f'Page {self.page_key}: {self.title} ({self.owner.search_string()})'
 
@@ -327,6 +354,9 @@ class ComicLink(models.Model):
     from_page = models.ForeignKey(ComicPage, on_delete = models.CASCADE, related_name = 'links_from')
     to_page = models.ForeignKey(ComicPage, on_delete = models.CASCADE, related_name = 'links_to')
     kind = models.TextField(choices=LINK_KINDS)
+
+    def is_owned_by(self, user):
+        return self.owner.owner.user == user
 
     @staticmethod
     def filter_owner(queryset, user):
