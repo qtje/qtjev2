@@ -11,6 +11,8 @@ from django.template import Template, Context
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from django.urls import reverse_lazy
+
 import simple_history
 
 from . import models
@@ -151,6 +153,8 @@ class PageEditView(LoginRequiredMixin, generic.edit.UpdateView):
         date = process_date(None)
         result = get_comic_page(date, page_key_str)
 
+        assert result.is_owned_by(self.request.user)
+
         return result
 
     def get_form_kwargs(self):
@@ -179,6 +183,39 @@ class PageCreateView(LoginRequiredMixin, generic.edit.CreateView):
 
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+
+
+class AliasEditView(LoginRequiredMixin, generic.edit.UpdateView):
+    login_url = '/login'
+    success_url = reverse_lazy('comic:list_aliases')
+
+    model = models.Alias
+    template_name = 'comic/generic_edit.html'
+    form_class = forms.AliasEditForm
+ 
+    def get_object(self, queryset = None):
+        result = self.model.get_latest(self.kwargs['hk'])
+        #TODO: Make this more better
+        assert result.owner.user == self.request.user
+        return result
+
+    def get_form_kwargs(self):
+        result = super().get_form_kwargs()
+        result['request'] = self.request
+        return result
+
+class AliasCreateView(LoginRequiredMixin, generic.edit.CreateView):
+    login_url = '/login'
+    success_url = reverse_lazy('comic:list_aliases')
+
+    model = models.Alias
+    template_name = 'comic/generic_edit.html'
+    form_class = forms.AliasCreateForm
+
+    def get_form_kwargs(self):
+        result = super().get_form_kwargs()
+        result['request'] = self.request
+        return result
 
 
 
@@ -314,8 +351,8 @@ class ThemeEditListView(EditListView):
 
 class AliasEditListView(EditListView):
     model = models.Alias
-    edit_url = 'comic:page'
-    new_url = 'comic:index'
+    edit_url = 'comic:edit_alias'
+    new_url = 'comic:edit_alias'
     new_link_text = 'New Alias'
 
     def render_table_map(self, object_list):

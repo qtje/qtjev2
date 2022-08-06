@@ -79,6 +79,9 @@ class OwnedHistory(models.Model):
     def is_owned_by(self, user):
         return self.owner.owner.user == user
 
+    def get_hk_value(self):
+        return getattr(self,self.default_hk)
+
     @staticmethod
     def filter_owner(queryset, user):
         return queryset.filter(owner__owner__user=user)
@@ -114,6 +117,11 @@ class OwnedHistory(models.Model):
                 res_map[keyval] = entry
 
         return list(res_map.values())
+
+    @classmethod
+    def get_next_hk(cls):
+        latest = max(cls.objects.all(), key = lambda x: x.hk)
+        return latest.hk+1
         
 class Searchable():
 

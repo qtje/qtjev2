@@ -60,9 +60,17 @@ class HistoryModelField(forms.Field):
     def clean(self, value):
         return self.get_instance(value)
 
-class PageEditForm(forms.ModelForm):
+class MyForm(forms.ModelForm):
 
+    template_name = 'comic/author_form.html'
     is_create = False
+
+    def __init__(self, **kwargs):
+        self.request = kwargs.pop('request')
+        instance = kwargs['instance']
+        if instance is not None:
+            self.target = kwargs['instance'].get_hk_value()
+        return super().__init__(**kwargs)
 
     def add_history_field(self, name, user, model, instance, choices = None, **kwargs):
         if choices is None:
@@ -73,11 +81,14 @@ class PageEditForm(forms.ModelForm):
         if not instance is None:
             self.initial[name] = instance.search_key()
 
-    def __init__(self, **kwargs):
-        self.request = kwargs.pop('request')
-        instance = kwargs['instance']
 
+
+class PageEditForm(MyForm):
+
+    def __init__(self, **kwargs):
         result = super().__init__(**kwargs)
+
+        instance = kwargs['instance']
 
         user = self.request.user
         defaults = {}
@@ -98,7 +109,7 @@ class PageEditForm(forms.ModelForm):
         return result
 
     def is_valid(self):
-        if self.fields['owner'].get_instance(self.data['owner']).owner.user != self.request.user:
+        if not self.fields['owner'].get_instance(self.data['owner']).is_owned_by(self.request.user):
             self.add_error('owner', 'Please enter an alias that you own.')
         return super().is_valid()
 
@@ -170,5 +181,48 @@ class PageCreateForm(PageEditForm):
                 link.save()
 
         return instance
+
+#
+#
+#
+
+class AliasEditForm(MyForm):
+
+    is_create = False
+    post_url = 'comic:edit_alias'
+
+    button = 'Update Alias'
+
+    def __init__(self, **kwargs):
+        instance = kwargs['instance']
+        if not self.is_create:
+            self.heading = f'Editing alias {instance.display_name}'
+        return super().__init__(**kwargs)
+
+    class Meta:
+        model = models.Alias
+        exclude = ['hk', 'owner']
+        widgets = {
+            'display_name': forms.TextInput
+        }
+
+class AliasCreateForm(AliasEditForm):
+
+    is_create = True
+    post_url = 'comic:edit_alias'
+
+    heading = 'Creating new alias'
+    button = 'Create Alias'
+
+    def save(self, commit=True):
+        self.instance.hk = models.Alias.get_next_hk()
+        owner = models.Author.objects.get(user=self.request.user)
+        self.instance.owner_id = owner.id
+
+        instance = super().save(commit)
+
+        return instance
+
+
 
 

@@ -1,0 +1,46 @@
+{% extends "comic/base.html" %}
+
+
+{% block left_links %}
+{% endblock %}
+
+{% block center_links %}
+<div class="BigTextWrap">
+    {{form.heading}}
+</div>
+{% endblock %}
+
+{% block right_links %}
+{% endblock %}
+
+{% block nav_right %}
+{% endblock %}
+
+
+{% block body %}
+<form class="AuthorForm" enctype="multipart/form-data" method="post" action="{% if form.is_create %}{% url form.post_url %}{% else %}{% url form.post_url form.target %}{% endif %}" >
+{% csrf_token %}
+
+{{ form }}
+
+<div class="AuthorFormDivider">
+<center>
+    <input type="submit" value="{{form.button}}">
+</center>
+</div>
+
+</form>
+{% endblock %}
+
+
+{% block meta_left %}
+{% endblock %}
+
+{% block meta_right %}
+{% endblock %}
+
+
+{% block forums %}
+{% endblock %}
+
+
