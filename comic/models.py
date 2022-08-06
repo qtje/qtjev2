@@ -332,6 +332,18 @@ class ComicPage(OwnedHistory, Searchable):
     def get_absolute_url(self):
         return reverse('comic:page', kwargs={'pk': self.page_key})
 
+    def render_template(self, date, template_text = None, context=None):
+        if template_text is None:
+            template_text = self.template.as_of(date).template
+
+        if template_text is not None and len(template_text) > 0:
+            if context is None:
+                context = Context({'object': self})
+            else:
+                context= Context(context)
+            template = Template(template_text)
+            return template.render(context)
+
     @classmethod
     def get_view_page(cls, date, page_key_str):
         """
@@ -361,6 +373,29 @@ class ComicPage(OwnedHistory, Searchable):
         result.arc = result.arc.as_of(date)
 
         return result
+
+    @classmethod
+    def get_test_page(cls):
+        return cls.objects.all()[0]
+
+
+
+    """
+        if result is not None:
+
+            theme_context = Context({'object': result})
+
+            template_text = result.template.as_of(date).template
+            if template_text is not None and len(template_text) > 0:
+                template = Template(template_text)
+                result.body = template.render(theme_context)
+
+            theme = result.theme.as_of(date)   
+            theme_dict = theme.get_templates()
+            result.theme_values = {k: v.render(theme_context) for k,v in theme_dict.items()}
+
+            return result
+    """
 
 
 

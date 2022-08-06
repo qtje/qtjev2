@@ -72,6 +72,8 @@ class ComicView(generic.DetailView):
 
         result['querystring'] = self.request.GET.urlencode()
 
+        result['body'] = instance.render_template(self.date, context=result)
+
         forums = ForumPost.objects.order_by('-timestamp').exclude(timestamp__gt=self.date)
         forums_here = forums.filter(source__page_key = instance.page_key)
 

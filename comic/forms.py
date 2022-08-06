@@ -286,11 +286,9 @@ class TemplateEditForm(MyForm):
 
         if template is not None and template != '':
             try:
-                template = django.template.Template(template)
                 date = datetime.datetime.now(datetime.timezone.utc)
-                test_data = models.ComicPage.get_view_page(date, '0000')
-                context = django.template.Context({'object': test_data})
-                test_render = template.render(context)
+                test_data = models.ComicPage.get_test_page()
+                test_data.render_template(date, template_text=template)
             except Exception as e:
                 self.add_error('template', str(e))
 
