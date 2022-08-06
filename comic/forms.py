@@ -94,6 +94,7 @@ class PageEditForm(forms.ModelForm):
         model = models.ComicPage
         exclude = ['hk', 'template', 'theme', 'arc', 'owner']
         widgets = {
+            'page_key': forms.HiddenInput,
             'title': forms.TextInput,
             'alt_text': forms.TextInput,
         }

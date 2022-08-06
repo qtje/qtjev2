@@ -33,10 +33,10 @@ Creating new page
 <div class="AFField">
     {{form.page_key.value}}
     <span title="When a page is created, it will use the next available page number. This value is the next available page number at the time this page was loaded, but might not be at the time of submission">&#x24D8;</span>
- 
-    <input type="hidden" value="{{ form.page_key.value }}" id="{{ form.page_key.id_for_label}}">
+    {{form.page_key}} 
 </div>
 
+{% include 'comic/grid_field.html' with field=form.owner label="Alias" %}
 {% include 'comic/grid_field.html' with field=form.image label="Image" %}
 {% include 'comic/grid_field.html' with field=form.title label="Title" %}
 {% include 'comic/grid_field.html' with field=form.alt_text label="Alt Text" %}
