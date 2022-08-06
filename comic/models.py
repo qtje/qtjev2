@@ -322,6 +322,7 @@ class ComicPage(OwnedHistory, Searchable):
         assert kind in ['n', 'p']
         existing = self.links_from.filter(kind=kind).all()
         page_user = self.owner.owner.user
+        total = len(existing)
         if page_user == user:
             existing = list(filter(lambda x: x.is_owned_by(user), existing))
         else:
@@ -329,7 +330,7 @@ class ComicPage(OwnedHistory, Searchable):
 
         print(f'{existing=}')
 
-        if len(existing) < 2: 
+        if len(existing) < 2 and total < 3: 
             return True
 
     def search_string(self):
