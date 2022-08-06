@@ -76,7 +76,10 @@ class ComicView(generic.DetailView):
         if instance is None:
             raise django.http.Http404('No such page at this time.')
 
-        result['querystring'] = self.request.GET.urlencode()
+        querystring = self.request.GET.urlencode()
+        if querystring != '':
+            querystring = '?' + querystring
+        result['querystring'] = querystring
 
         result['body'] = instance.render_template(self.date, context=result)
         result['theme_values'] = instance.render_theme(self.date, context=result)

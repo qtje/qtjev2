@@ -16,7 +16,7 @@
 {% else %}
     {% for link in object.prev_links %}
         <div class="PixelWrap">
-        <a class="navsym" href = "{% url 'comic:page' link.to_page.page_key %}?{{querystring}}" 
+        <a class="navsym" href = "{% url 'comic:page' link.to_page.page_key %}{{querystring}}" 
             title="{{ link.author.simple_name }}"
             >
             <svg viewBox="-1.732 -1 1.732 2" xml:space="preserve" height="30px">
@@ -43,7 +43,7 @@
         </div> 
     {% for link in object.first_links %}
         <div class="PixelWrap">
-        <a class="navsym" href = "{% url 'comic:page' link.to_page.page_key %}?{{object.querystring}}" 
+        <a class="navsym" href = "{% url 'comic:page' link.to_page.page_key %}{{querystring}}" 
             title="{{ link.author.simple_name }}"
             >
             <svg viewBox="0 0 1 1" xml:space="preserve" height="30px">
@@ -65,7 +65,7 @@
  
     {% for link in object.next_links %}
         <div class="PixelWrap">
-        <a class="navsym" href = "{% url 'comic:page' link.to_page.page_key %}?{{object.querystring}}"
+        <a class="navsym" href = "{% url 'comic:page' link.to_page.page_key %}{{querystring}}"
             title="{{ link.author.simple_name }}"
             >
             <svg viewBox="0 -1 1.732 2" xml:space="preserve" height="30px">

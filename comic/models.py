@@ -17,7 +17,6 @@ import django.utils
 
 """
 MVP:
-Need to fix stray ? in link urls when there's no querystring.
 
 Nice to have:
 I need to audit owner alias management to make sure it's rendering dated versions properly and using hk's for direct comparisons rather than instances.
