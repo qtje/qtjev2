@@ -265,12 +265,26 @@ class ComicLink(models.Model):
         ('n', 'next'),
         ('p', 'prev'),
         ('f', 'first'),
-        ('d', 'deleted'),
         )
 
     from_page = models.ForeignKey(ComicPage, on_delete = models.CASCADE, related_name = 'links_from')
     to_page = models.ForeignKey(ComicPage, on_delete = models.CASCADE, related_name = 'links_to')
     kind = models.TextField(choices=LINK_KINDS)
+
+    @staticmethod
+    def filter_owner(queryset, user):
+        return queryset.filter(owner__owner__user=user)
+
+    @classmethod
+    def get_all_latest(cls, user, key=None):
+        result = cls.objects
+        result.filter(deleted_at__isnull=True)
+        if user is not None:
+            result = cls.filter_owner(result, user)
+        result = result.order_by('-created_at')
+   
+        return result
+     
 
     def __str__(self):
         return f'{self.kind} {self.from_page} to {self.to_page} ({self.owner})'

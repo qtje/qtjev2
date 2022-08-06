@@ -40,21 +40,24 @@
 <div class="Navigation">
 <div class="NavSide">
 <div class="NavLL SmallTextWrap">
-Hello {{ user }} <br>
+Hello <br>
 <a href="">Logout</a>
 </div>
 <div class="NavL BigTextWrap">
     <a href="{% url 'comic:edit_pages' %}">PAGES</a> l
-    <a href="{% url 'comic:index' %}">LINKS</a>
+    <a href="{% url 'comic:edit_links' %}">LINKS</a> l
+    <a href="{% url 'comic:index' %}">ARCS</a> l
 </div>
 </div>
 <div class="NavC BigTextWrap">
-    l <a href="{% url 'comic:edit_templates' %}">TEMPLATES</a> l
+    <a href="{% url 'comic:edit_aliases' %}">ALIASES</a>
 </div>
 <div class="NavSide">
 <div class="NavR BigTextWrap">
-    <a href="{% url 'comic:edit_themes' %}">THEMES</a> l
-    <a href="{% url 'comic:edit_aliases' %}">ALIASES</a>
+    l <a href="{% url 'comic:edit_templates' %}">TEMPLATES</a>
+    l <a href="{% url 'comic:edit_themes' %}">THEMES</a>
+
+
 </div>
 </div>
 </div>

@@ -134,6 +134,32 @@ class PageEditListView(EditListView):
             'rows' : tables,
         }
 
+class LinkEditListView(EditListView):
+    model = models.ComicLink
+    edit_url = 'comic:page'
+    new_url = 'comic:index'
+    new_link_text = 'New Link'
+
+    def render_table_map(self, object_list):
+        header = ['Link type', 'From Page', 'To Page', 'Owner', 'Creation Date']
+        tables = []
+        for entry in object_list:
+            row_data = [entry.kind, entry.from_page.page_key, entry.to_page.page_key, entry.owner.display_name, entry.created_at]
+            row = {
+                'row_data': row_data,
+                'edit_key': entry.id,
+                'view_key': entry.id,
+                }
+
+            tables.append(row)
+
+        return {
+            'header': header,
+            'rows' : tables,
+        }
+
+
+
 class TemplateEditListView(EditListView):
     model = models.PageTemplate
     edit_url = 'comic:page'
