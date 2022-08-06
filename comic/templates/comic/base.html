@@ -21,14 +21,13 @@
 <body>
 
 <div id="HeaderWrapper">
-    <div id="wrapper">
-        <div id="Header">
-            <a href="{% url 'comic:index' %}"><img class="profile" src="banner.png"></a>
-        </div> 
+    <div id="Header">
+        <a href="{% url 'comic:index' %}"><img src="{% static 'comic/banner.jpg' %}"></a>
+    </div> 
 <!--<div id="Header2"> A webcomic of depression<br> sarcasm, irony, and ennui</div>-->
-    </div>
+
+<div class="Subtitle" id="Subtitle">An official contination of <i>qtje</i>. <a href="">Learn more</a></div>
 </div>
-<div class="Subtitle" id="Subtitle">An official contination of <i>qtje</i>. Learn more</div>
 
 <div id="Background"><div id="content">
 
