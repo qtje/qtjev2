@@ -1,5 +1,13 @@
 {% extends "comic/base.html" %}
 
+{% block center_links %}
+<div class = "BigTextWrap">
+Author Login
+</div>
+{% endblock %}
+
+
+
 {% block body %}
 
 {% if form.errors %}
@@ -17,19 +25,12 @@
 
 <form method="post" action="{% url 'comic:login' %}">
 {% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
+<center>
+{{ form.as_p }}
 
 <input type="submit" value="login">
 <input type="hidden" name="next" value="{{ next }}">
+</center>
 </form>
 
 {% endblock %}
