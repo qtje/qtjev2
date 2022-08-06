@@ -6,7 +6,9 @@
 
 {% block center_links %}
 <div class="BigTextWrap">
-New Page
+    <a href = "{% url new_url %}">
+        {{new_link_text}}
+    </a>
 </div>
 {% endblock %}
 
@@ -27,10 +29,18 @@ New Page
 </tr>
 {% for row in table_map.rows %}
 <tr>
-    {% for value in row %}        
-        <td>{{value|truncatechars:40}}</td>
+    {% for value in row.row_data %}
+        <td>
+        {% if forloop.first %} <a href="{% url view_url row.view_key %}"> {% endif %}
+        {{value|truncatechars:40}}
+        {% if forloop.first %} </a> {% endif %}
+        </td>
     {% endfor %}
-    <td>Edit</td>
+    <td>
+    <a href = "{% url edit_url row.edit_key %}">
+        Edit
+    </a>
+    </td>
 </tr>
 {% endfor %}
 </table>

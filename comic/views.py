@@ -82,27 +82,63 @@ class ComicView(generic.DetailView):
 
 forum_filter = str.maketrans({x: None for x in ',.:;\'"'})
 
-class PageEditListView(LoginRequiredMixin, generic.ListView):
+class EditListView(LoginRequiredMixin, generic.ListView):
     login_url = '/login'
     model = ComicPage
     template_name = 'comic/page_list.html'
+    hk = 'hk'
+
+    view_url = ''
+    edit_url = 'comic:page'
+    new_url = 'comic:index'
+    new_link_text = 'New Whatever'
 
     def get_queryset(self):
-        return ComicPage.get_all_latest(self.request.user, 'page_key')
+        return self.model.get_all_latest(self.request.user, self.hk)
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
+
+        result['table_map'] = self.render_table_map(result['object_list'])
+        result['edit_url'] = self.edit_url
+        result['new_url'] = self.new_url
+        result['view_url'] = self.view_url
+        result['new_link_text'] = self.new_link_text
+
+        return result
+
+
+class PageEditListView(EditListView):
+    login_url = '/login'
+    model = ComicPage
+    template_name = 'comic/page_list.html'
+    hk = 'page_key'
+    view_url = 'comic:page'
+    edit_url = 'comic:page'
+    new_url = 'comic:index'
+    new_link_text = 'New Page'
+
+
+    def render_table_map(self, object_list):
         header = ['Page Number', 'Title', 'Story Arc', 'Alt Text', 'Owner', 'Last Modified']
         tables = []
-        for entry in result['object_list']:
-            tables.append([entry.page_key, entry.title, entry.arc.display_name, entry.alt_text, entry.owner.display_name, entry.created_at])
+        for entry in object_list:
+            row_data = [entry.page_key, entry.title, entry.arc.display_name, entry.alt_text, entry.owner.display_name, entry.created_at]
+            row = {
+                'row_data': row_data,
+                'edit_key': entry.page_key,
+                'view_key': entry.page_key,
+                }
 
-        result['table_map'] = {
+            tables.append(row)
+
+        return {
             'header': header,
             'rows' : tables,
         }
 
-        return result
+
+
     
 def do_forum_post(request):
     if request.method != 'POST': return
