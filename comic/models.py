@@ -17,6 +17,7 @@ import django.utils
 
 """
 I need to audit owner alias management to make sure it's rendering dated versions properly and using hk's for direct comparisons rather than instances.
+    links,arcs,templates,themes not using current alias display name
 
 I need a story arcs listing page.<F6><F6>
 
@@ -81,11 +82,11 @@ class OwnedHistory(models.Model):
     def get_hk_value(self):
         return getattr(self,self.default_hk)
 
-    def sanitize(self):
+    def sanitize(self, date):
         """
         Replaces anything that shouldn't get sent to a user template
         """
-        self.author = self.owner.sanitize()
+        self.author = self.owner.sanitize(date)
         self.owner = None
         return self
 
@@ -199,12 +200,13 @@ class Alias(OwnedHistory, Searchable):
             return self.conflict_icon + ' ' + self.display_name
 
 
-    def sanitize(self):
+    def sanitize(self, date):
         """
         Returns a dictionary of values that can be used to safely render aliases
         in user-generated templates.
         """
         result = {}
+        self = self.as_of(date)
         display_name_safe = django.utils.html.conditional_escape(self.display_name)
         if not self.is_conflicted():
             result['simple_name'] = display_name_safe
@@ -394,18 +396,18 @@ class ComicPage(OwnedHistory, Searchable):
         return theme_values
 
 
-    def sanitize(self):
-        self.author = self.owner.sanitize()
+    def sanitize(self, date):
+        self.author = self.owner.sanitize(date)
         self.owner = None
 
-        self.next_links = [x.sanitize() for x in self.next_links] 
-        self.prev_links = [x.sanitize() for x in self.prev_links] 
-        self.first_links = [x.sanitize() for x in self.first_links] 
+        self.next_links = [x.sanitize(date) for x in self.next_links] 
+        self.prev_links = [x.sanitize(date) for x in self.prev_links] 
+        self.first_links = [x.sanitize(date) for x in self.first_links] 
 
-        self.arc = self.arc.sanitize()
+        self.arc = self.arc.sanitize(date)
 
-        self.template = self.template.sanitize()
-        self.theme = self.theme.sanitize()
+        self.template = self.template.sanitize(date)
+        self.theme = self.theme.sanitize(date)
 
         return self
 
@@ -452,7 +454,7 @@ class ComicPage(OwnedHistory, Searchable):
         result.arc = result.arc.as_of(date)
     
         if sanitize:
-            result = result.sanitize()
+            result = result.sanitize(date)
         return result
 
     @classmethod
@@ -552,8 +554,8 @@ class ComicLink(models.Model):
     def filter_owner(queryset, user):
         return queryset.filter(owner__owner__user=user)
 
-    def sanitize(self):
-        self.author = self.owner.sanitize()
+    def sanitize(self, date):
+        self.author = self.owner.sanitize(date)
         self.owner = None
         return self
 
