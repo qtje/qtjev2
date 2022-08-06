@@ -186,6 +186,7 @@ class ForumView(generic.ListView):
     model = models.ForumPost
     paginate_by = 100
 
+
 #
 # Help View (For Authors)
 #
@@ -234,7 +235,7 @@ class PageEditView(LoginRequiredMixin, generic.edit.UpdateView):
              raise django.http.Http404('No such page')           
 
         if not result.is_owned_by(self.request.user):
-            raise PermissionDenied
+            raise PermissionDenied('You do not own that')
  
         return result
 
@@ -278,7 +279,7 @@ class GenericEditView(LoginRequiredMixin, generic.edit.UpdateView):
             raise django.http.Http404('No such object')
 
         if not result.is_owned_by(self.request.user):
-            raise PermissionDenied
+            raise PermissionDenied('You do not own that')
         return result
 
     def get_form_kwargs(self):
@@ -317,7 +318,7 @@ class LinkDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
              raise django.http.Http404('No such link')
 
         if not result.is_owned_by(self.request.user):
-            raise PermissionDenied
+            raise PermissionDenied('You do not own that')
         return result
 
     def form_valid(self, form):

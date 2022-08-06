@@ -16,13 +16,13 @@ import django.utils
 # Create your models here.
 
 """
+MVP:
+Need to fix stray ? in link urls when there's no querystring.
+
+Nice to have:
 I need to audit owner alias management to make sure it's rendering dated versions properly and using hk's for direct comparisons rather than instances.
 
 I need a story arcs listing page.<F6><F6>
-
-Need to implement error pages
-
-Need to fix stray ? in link urls when there's no querystring.
 
 It might be nice to have a memory of the user's last-used templates, arcs, etc to autopopulate the page creation form.
 
