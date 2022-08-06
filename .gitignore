@@ -1,0 +1,4 @@
+*.sw*
+*.db.*
+*.vim
+qtje/secret_configs.py
