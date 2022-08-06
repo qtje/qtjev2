@@ -36,17 +36,17 @@ img.profile
      //margin-left: 20px auto;
      padding: 0px;
 }
-#Updates
+.Subtitle
 {
-     width: 460px;
-     height: 24px;
-     margin: 0px auto;
-     font-size: 16px;
-     font-variant: small-caps;
-     font-weight: 420;
-//     font-style:oblique;
-     text-align: left;
-     padding: 0px;
+    height: 24px;
+    margin: auto;
+    width: fit-content;
+    font-size: 16px;
+    font-variant: small-caps;
+    font-weight: 420;
+/*    font-style:oblique;*/
+    text-align: left;
+    padding: 0px;
 }
 #wrapper
 {

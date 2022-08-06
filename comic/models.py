@@ -7,8 +7,10 @@ from django.conf import settings
 
 from django.contrib.auth.models import User
 
-import simple_history
-from simple_history.models import HistoricalRecords
+from django.template import Template, Context
+
+#import simple_history
+#from simple_history.models import HistoricalRecords
 
 # Create your models here.
 
@@ -16,19 +18,14 @@ from simple_history.models import HistoricalRecords
 I would like to make the django admin be able to show only the latest versions
 of Historied models.
 
-Need to actually implement themes:
-I think this will basically consist of taking most of the blocks I have in the comic template,
-dumping them into a table, and then rendering them by hand before passing the rendered chunks  to
-the actual template.
-
-Alternatively, maybe I can substitute the strings for a placeholder in the template and then render
-normally. I would like, for example, the link theme template to be for a single link so I can
-ensure that all links will always be rendered regardless of theme.
-
 Need a set of pages for authors to use to make changes. I think I just need to take complete control over the forms available to authors rather than using the admin site. This way I can more clearly define the actions and author can take and create UX that's tailored to making those actions managable.
 
 Need to work out how to have author accounts
 That stuff is all in https://docs.djangoproject.com/en/4.0/topics/auth/default/#module-django.contrib.auth.views
+
+Need to implement authors and forum views
+
+Need to implement rss feeds
 """
 
 
@@ -105,7 +102,6 @@ class Author(models.Model):
 class Alias(OwnedHistory):
     display_name = models.TextField()
     owner = models.ForeignKey(Author, on_delete = models.CASCADE, related_name = 'aliases')
-    history = HistoricalRecords()
 
     def is_conflicted(self):
         count = Alias.objects.filter(display_name=self.display_name).count()
@@ -129,6 +125,31 @@ class PageTemplate(OwnedHistory):
 class PageTheme(OwnedHistory):
     owner = models.ForeignKey(Alias, on_delete = models.CASCADE, related_name = 'owned_themes')
     name = models.TextField()
+
+    extra_rss_links = models.TextField(null=True, blank=True)
+
+    left_links = models.TextField(null=True, blank=True)
+    center_links = models.TextField(null=True, blank=True)
+    right_links = models.TextField(null=True, blank=True)
+
+    nav_right = models.TextField(null=True, blank=True)
+
+    meta_left = models.TextField(null=True, blank=True)
+    meta_right= models.TextField(null=True, blank=True)
+
+    keys = [
+            'extra_rss_links', 'left_links', 'center_links', 'right_links', 'nav_right',
+            'meta_left', 'meta_right',
+            ]
+
+    def get_templates(self):
+        result = {}
+        for key in self.keys:
+            template = getattr(self, key)
+            if template is None or len(template) == 0:
+                continue
+            result[key] = Template(template) 
+        return result 
 
     def __str__(self):
         return f'{self.name} ({self.owner}) as of {self.created_at}'

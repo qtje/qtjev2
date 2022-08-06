@@ -63,10 +63,15 @@ class ComicView(generic.DetailView):
 
             result.arc = result.arc.as_of(date)
 
-            template = Template(result.template.as_of(date).template)
+            theme_context = Context({'object': result})
+
+            template = Template(result.template.as_of(date).template)           
+
             theme = result.theme.as_of(date)   
- 
-            body = template.render(Context({'object': result}))
+            theme_dict = theme.get_templates()
+            result.theme_values = {k: v.render(theme_context) for k,v in theme_dict.items()}
+
+            body = template.render(theme_context)
 
             result.body = body
             return result

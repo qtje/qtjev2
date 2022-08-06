@@ -1,11 +1,20 @@
 {% extends "comic/base.html" %}
 
 {% block extra_rss_links %}
-<a>Feed for {{ object.owner.display_name }}</a>
+
+{% if object.theme_values.extra_rss_links %}
+    {{object.theme_values.extra_rss_links}}
+{% else %}
+    <a>Feed for {{ object.owner.display_name }}</a>
+{% endif%}
+
 {% endblock %}
 
 
 {% block left_links %}
+{% if object.theme_values.left_links %}
+    {{object.theme_values.left_links}}
+{% else %}
     {% for link in object.prev_links %}
         <div class="PixelWrap">
         <a class="navsym" href = "{% url 'comic:page' link.to_page.page_key %}?{{object.querystring}}" 
@@ -18,9 +27,13 @@
         </div>
 
     {% endfor %}
+{% endif %}
 {% endblock %}
 
 {% block center_links %}
+{% if object.theme_values.center_links %}
+    {{object.theme_values.center_links}}
+{% else %}
 <div>
         <div class="PixelWrap">
         <a class="navsym" href = "{% url 'comic:page' '0000'  %}">
@@ -41,11 +54,16 @@
         </div>
     {% endfor %}
 </div>
+{% endif %}
 {% endblock %}
 
 
 
 {% block right_links %}
+ {% if object.theme_values.right_links %}
+    {{object.theme_values.right_links}}
+{% else %}
+ 
     {% for link in object.next_links %}
         <div class="PixelWrap">
         <a class="navsym" href = "{% url 'comic:page' link.to_page.page_key %}?{{object.querystring}}"
@@ -57,9 +75,14 @@
         </a>
         </div>
     {% endfor %}
+{% endif %}
 {% endblock %}
 
 {% block nav_right %}
+{% if object.theme_values.nav_right %}
+    {{object.theme_values.nav_right}}
+{% else %}
+
 <div class="SmallTextWrap">
 {{ object.title }}<br>
 {% if object.owner.is_conflicted %}
@@ -67,6 +90,8 @@
 {% endif %}
 {{object.owner.display_name}} 
 </div>
+
+{% endif %}
 
 {% endblock %}
 
@@ -77,17 +102,27 @@
 
 
 {% block meta_left %}
+{% if object.theme_values.meta_left %}
+    {{object.theme_values.meta_left}}
+{% else %}
+
 <div class="SmallTextWrap">
 Story Arc:<br>
 {{ object.arc.display_name }}
 </div>
+{% endif %}
 {% endblock %}
 
 {% block meta_right %}
+{% if object.theme_values.meta_right %}
+    {{object.theme_values.meta_right}}
+{% else %}
+
 <div class="SmallTextWrap">
 Page Posted: <br>
 {{ object.first_version.created_at|date:'Y-m-d'}}
 </div>
+{% endif %}
 {% endblock %}
 
 {% block forum_form %}
