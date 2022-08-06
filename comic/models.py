@@ -9,9 +9,6 @@ from django.contrib.auth.models import User
 
 from django.template import Template, Context
 
-#import simple_history
-#from simple_history.models import HistoricalRecords
-
 # Create your models here.
 
 """
@@ -117,7 +114,7 @@ class Alias(OwnedHistory):
 class PageTemplate(OwnedHistory):
     owner = models.ForeignKey(Alias, on_delete = models.CASCADE, related_name = 'owned_templates')
     name = models.TextField()
-    template = models.TextField()
+    template = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f'{self.name} ({self.owner}) as of {self.created_at}'

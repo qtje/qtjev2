@@ -65,15 +65,15 @@ class ComicView(generic.DetailView):
 
             theme_context = Context({'object': result})
 
-            template = Template(result.template.as_of(date).template)           
+            template_text = result.template.as_of(date).template
+            if template_text is not None and len(template_text) > 0:
+                template = Template(template_text)
+                result.body = template.render(theme_context)
 
             theme = result.theme.as_of(date)   
             theme_dict = theme.get_templates()
             result.theme_values = {k: v.render(theme_context) for k,v in theme_dict.items()}
 
-            body = template.render(theme_context)
-
-            result.body = body
             return result
 
 forum_filter = str.maketrans({x: None for x in ',.:;\'"'})

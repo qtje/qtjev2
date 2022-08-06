@@ -97,7 +97,11 @@
 
 
 {% block body %}
-{{ object.body }}
+{% if object.body %}
+    {{ object.body }}
+{% else %}
+<img src="{{ object.image.url }}" title="{{ object.alt_text }}"></img>
+{% endif %}
 {% endblock %}
 
 
