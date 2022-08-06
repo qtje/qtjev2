@@ -27,6 +27,8 @@ It might be nice to have a memory of the user's last-used templates, arcs, etc t
 
 It's possible I should like make the Alias model have a user property that returns its owner's user in order to make ownership checking more consistent and less error-prone
 
+It would be nice to be able to set a future creation date for a page so that it gets released at a scheduled datetime.
+
 """
 
 
