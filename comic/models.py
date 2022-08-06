@@ -16,25 +16,15 @@ import django.utils
 # Create your models here.
 
 """
-I would like to make the django admin be able to show only the latest versions
-of Historied models.
-
-Need a set of pages for authors to use to make changes. I think I just need to take complete control over the forms available to authors rather than using the admin site. This way I can more clearly define the actions and author can take and create UX that's tailored to making those actions managable.
-This will be mainly a set of listviews that also include an Add button at the top
-Paired with a set of detailviews, I suppose? or some kind of form view
-
-Need to work out how to have author accounts
-That stuff is all in https://docs.djangoproject.com/en/4.0/topics/auth/default/#module-django.contrib.auth.views
-
 Need to implement authors and forum views
-
-Need to implement rss feeds
 
 Need to implement error pages
 
 Need a tutorial page for authors
 
-Need a password change system for authors
+It might be nice to have a memory of the user's last-used templates, arcs, etc to autopopulate the page creation form.
+
+It's possible I should like make the Alias model have a user property that returns its owner's user in order to make ownership checking more consistent and less error-prone
 """
 
 

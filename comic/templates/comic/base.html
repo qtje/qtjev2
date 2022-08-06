@@ -86,14 +86,14 @@ Hello <br>
 
             <!-- RSS Feed -->
             <div class ="rss">
-                <a href = "rss.xml">
+                <a href = "{% url 'comic:rss' %}">
                 <img src = "{% static 'comic/rss.png' %}" style="float:left;"/>
-                </a>
+                </a><!--
                 <div class="rss-dropdown">
-                    <a href="rss.xml">Main RSS Feed</a><br>
+                    <a href="{% url 'comic:rss' %}">Main RSS Feed</a><br>
                     {% block extra_rss_links %}
                     {% endblock %}
-                </div>
+                </div>-->
             </div>
 
         </div>

@@ -1,3 +1,5 @@
+import mimetypes
+import urllib.parse
 import datetime
 import dateutil.parser
 
@@ -13,10 +15,11 @@ from django.views import generic
 from django.template import Template, Context
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.syndication.views import Feed
 
 from django.urls import reverse_lazy
 
-import simple_history
+from django.utils.feedgenerator import Enclosure
 
 from . import models
 from .models import ComicPage, ForumPost
@@ -109,6 +112,34 @@ def do_forum_post(request):
 
     return HttpResponseRedirect(return_path)
 
+#
+# RSS Feeds
+#
+
+class PageFeed(Feed):
+
+    title = 'qtjev2'
+    link = '/'
+    description = 'A webcomic of depression, sarcasm, irony, and ennui. Updates whenever.'
+
+    def items(self):
+        return models.ComicPage.get_all_latest()[:10]
+
+    def item_title(self, item):
+        if item.title != '':
+            return f'Page {item.page_key}: {item.title}, by {item.owner.display_name}'
+        else:
+             return f'Page {item.page_key}, by {item.owner.display_name}'           
+
+    def item_description(self, item):
+        return item.alt_text
+
+    def item_enclosures(self, item):
+        image = item.image
+        mime = mimetypes.guess_type(image.url)[0]
+        url = image.url
+        entry = Enclosure(url = url, length = str(image.size), mime_type=mime)
+        return [entry]
 #
 # Additional pages for users
 #
