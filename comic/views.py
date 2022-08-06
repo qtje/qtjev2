@@ -278,6 +278,7 @@ class EditListView(LoginRequiredMixin, generic.ListView):
     edit_url = 'comic:edit_page'
     new_url = 'comic:create_page'
     new_link_text = 'New Whatever'
+    edit_link_text = 'Edit'
 
     def get_queryset(self):
         return self.model.get_all_latest(self.request.user, self.hk)
@@ -290,6 +291,7 @@ class EditListView(LoginRequiredMixin, generic.ListView):
         result['new_url'] = self.new_url
         result['view_url'] = self.view_url
         result['new_link_text'] = self.new_link_text
+        result['edit_link_text'] = self.edit_link_text
 
         return result
 
@@ -325,12 +327,18 @@ class LinkEditListView(EditListView):
     edit_url = 'comic:page'
     new_url = 'comic:edit_link'
     new_link_text = 'New Link'
+    edit_link_text = 'Delete'
+    template_name = 'comic/link_list.html'
 
     def render_table_map(self, object_list):
         header = ['Link type', 'From Page', 'To Page', 'Owner', 'Creation Date']
         tables = []
         for entry in object_list:
-            row_data = [entry.kind, entry.from_page.page_key, entry.to_page.page_key, entry.owner.display_name, entry.created_at]
+            row_data = [
+                models.ComicLink.LINK_KINDS[entry.kind], 
+                entry.from_page.page_key, 
+                entry.to_page.page_key, 
+                entry.owner.display_name, entry.created_at]
             row = {
                 'row_data': row_data,
                 'edit_key': entry.id,

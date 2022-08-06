@@ -38,7 +38,7 @@
     {% endfor %}
     <td>
     <a href = "{% url edit_url row.edit_key %}">
-        Edit
+        {{ edit_link_text }}
     </a>
     </td>
 </tr>

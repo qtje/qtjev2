@@ -1,0 +1,30 @@
+{% extends "comic/page_list.html" %}
+
+
+{% block body %}
+<table class = "ListTable">
+<tr>
+{% for header in table_map.header %}
+<td>{{header}}</td>
+{% endfor %}
+<td></td>
+</tr>
+{% for row in table_map.rows %}
+<tr>
+    {% for value in row.row_data %}
+        <td>
+        {% if forloop.counter > 1 and forloop.counter < 4 %} <a href="{% url 'comic:page' value %}"> {% endif %}
+        {{value|truncatechars:40}}
+        {% if forloop.counter > 1 and forloop.counter < 4 %} </a> {% endif %}
+        </td>
+    {% endfor %}
+    <td>
+    <a href = "{% url edit_url row.edit_key %}">
+        {{ edit_link_text }}
+    </a>
+    </td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}
+
