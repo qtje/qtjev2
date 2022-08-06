@@ -99,10 +99,10 @@ class Searchable():
         return str(self)
 
     def search_index(self):
-        return self.id
+        return getattr(self, self.default_hk)
 
     def search_key(self):
-        return f'{self.search_index()}|{self.search_string()}'
+        return f'{self.search_index()}: {self.search_string()}'
 
 def history_post_save(**kwargs):
     """
@@ -147,6 +147,9 @@ class Alias(OwnedHistory, Searchable):
     def __str__(self):
         return f'{self.display_name} ({self.owner})'
 
+    def search_string(self):
+        return f'{self.display_name}'
+
 
 ### Comic Customization ###
 
@@ -159,7 +162,7 @@ class PageTemplate(OwnedHistory, Searchable):
         return f'{self.name} ({self.owner}) as of {self.created_at}'
 
     def search_string(self):
-        return f'{self.name} ({self.owner})'
+        return f'{self.name} ({self.owner.search_string()})'
 
 class PageTheme(OwnedHistory, Searchable):
     owner = models.ForeignKey(Alias, on_delete = models.CASCADE, related_name = 'owned_themes')
@@ -193,6 +196,11 @@ class PageTheme(OwnedHistory, Searchable):
     def __str__(self):
         return f'{self.name} ({self.owner}) as of {self.created_at}'
 
+    def search_string(self):
+        return f'{self.name} ({self.owner.search_string()})'
+
+
+
 ### Comic Structure ###
 
 class ComicArc(OwnedHistory, Searchable):
@@ -202,6 +210,11 @@ class ComicArc(OwnedHistory, Searchable):
 
     def __str__(self):
         return f'{self.display_name} ({self.slug_name}) - {self.owner}'
+
+    def search_string(self):
+        return f'{self.display_name} ({self.slug_name}) ({self.owner.search_string()})'
+
+
 
 
 class ComicPage(OwnedHistory, Searchable):
@@ -245,10 +258,7 @@ class ComicPage(OwnedHistory, Searchable):
             models.Model.save(self, *args, **kwargs)
 
     def search_string(self):
-        return f'Page {self.page_key}: {self.title}'
-
-    def search_index(self):
-        return self.page_key
+        return f'Page {self.page_key}: {self.title} ({self.owner.search_string()})'
 
     def __str__(self):
         self.old_from = self.links_from.all()

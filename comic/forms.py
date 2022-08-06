@@ -16,17 +16,18 @@ class DummyWidget(forms.Widget):
 class AutocompleteWidget(forms.TextInput):
     template_name = "comic/autocomplete_widget.html"
 
-    def __init__(self, choices, model, attrs=None):
+    def __init__(self, choices, model, user, attrs=None):
         super().__init__(attrs)
         self.choices = choices
         self.model = model
+        self.user = user
 
     def get_context(self, name, value, attrs):
         list_name = attrs.get('list', None)
         if list_name is None:
             attrs['list'] = f'list_{name}'
 
-        choices = self.choices(user=None)
+        choices = self.choices(user=self.user)
         choices = [(x.search_key(), x.search_string()) for x in choices]
 
         context = super().get_context(name, value, attrs)
@@ -41,40 +42,57 @@ class AutocompleteWidget(forms.TextInput):
 
 class HistoryModelField(forms.Field):
     widget=AutocompleteWidget
-    def __init__(self, model, **kwargs):
+    def __init__(self, user, model, **kwargs):
         self.model = model
+        self.user = user
         choices = model.get_all_latest
-        kwargs['widget'] = self.widget(choices = choices, model=model)
+        kwargs['widget'] = self.widget(choices = choices, model=model, user=user)
         super().__init__(**kwargs)
         
 
 
 class PageEditForm(forms.ModelForm):
 
-    next_page_owner = HistoryModelField(
-        model=models.ComicPage
-        )
-    next_page_any = HistoryModelField(model=models.ComicPage)
+#    next_page_owner = HistoryModelField(
+#        model=models.ComicPage
+#        )
+#    next_page_any = HistoryModelField(model=models.ComicPage)
 
-    template = HistoryModelField(model=models.PageTemplate)
-    theme = HistoryModelField(model=models.PageTheme)
-    arc = HistoryModelField(model=models.ComicArc)
+    reciprocate_owner = forms.BooleanField()
+    reciprocate_any = forms.BooleanField()
 
-    owner = HistoryModelField(model=models.Alias)
+    def add_history_field(self, name, user, model, instance):
+        self.fields[name] = HistoryModelField(model=model, user=user)
+        if not instance is None:
+            self.initial[name] = instance.search_key()
 
     def __init__(self, **kwargs):
         self.request = kwargs.pop('request')
+        instance = kwargs['instance']
 
+        print(kwargs)
         result = super().__init__(**kwargs)
+
+        user = self.request.user
+        self.add_history_field('template', None, models.PageTemplate, instance.template)
+        self.add_history_field('theme', None, models.PageTheme, instance.theme)
+        self.add_history_field('arc', None, models.ComicArc, instance.arc)
+        self.add_history_field('owner', user, models.Alias, instance.owner)
+
+        self.add_history_field('next_page_owner', None, models.ComicPage, None)
+        self.add_history_field('next_page_any', None, models.ComicPage, None)
+
+
         return result
 
 
     class Meta:
         model = models.ComicPage
-        exclude = ['hk']
+        exclude = ['hk', 'template', 'theme', 'arc', 'owner']
         widgets = {
             'page_key': DummyWidget,
-            'title': forms.TextInput
+            'title': forms.TextInput,
+            'alt_text': forms.TextInput,
         }
 #        fields = ['title', 'arc', 'image', 'alt_text']
 
