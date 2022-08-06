@@ -258,11 +258,11 @@ class ComicPage(OwnedHistory, Searchable):
     page_key = models.TextField() #4 hex digits
     default_hk = 'page_key'
 
-    title = models.TextField()
+    title = models.TextField(blank = True, null = True)
     arc = models.ForeignKey(ComicArc, on_delete = models.CASCADE)
 
     image = models.ImageField(upload_to='images')
-    alt_text = models.TextField()
+    alt_text = models.TextField(blank = True, null = True)
 
     transcript = models.TextField(blank=True, null=True)
 

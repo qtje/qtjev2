@@ -140,7 +140,7 @@ class PageEditView(LoginRequiredMixin, generic.edit.UpdateView):
 
     model = ComicPage
     template_name = 'comic/page_edit.html'
-    form_class = forms.PageCreateForm
+    form_class = forms.PageEditForm
  
     def get_object(self, queryset = None):
 
@@ -159,7 +159,33 @@ class PageEditView(LoginRequiredMixin, generic.edit.UpdateView):
 
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
- 
+
+class PageCreateView(LoginRequiredMixin, generic.edit.CreateView):
+    login_url = '/login'
+
+    model = ComicPage
+    template_name = 'comic/page_edit.html'
+    form_class = forms.PageCreateForm
+
+    def get_object(self, queryset = None):
+
+        page_key_str = self.kwargs.get('pk', '0')
+
+        date = process_date(None)
+        result = get_comic_page(date, page_key_str)
+
+        return result
+
+
+    def get_form_kwargs(self):
+        result = super().get_form_kwargs()
+        result['request'] = self.request
+        return result
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
 
 #
 # Entity List Views (For Authors)

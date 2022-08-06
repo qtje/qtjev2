@@ -66,6 +66,8 @@ class PageEditForm(forms.ModelForm):
         if choices is None:
             choices = model.get_all_latest(user=user)
         self.fields[name] = HistoryModelField(model=model, choices=choices, **kwargs)
+        if instance == 'auto':
+            instance = choices[-1]
         if not instance is None:
             self.initial[name] = instance.search_key()
 
@@ -73,14 +75,22 @@ class PageEditForm(forms.ModelForm):
         self.request = kwargs.pop('request')
         instance = kwargs['instance']
 
-        print(kwargs)
         result = super().__init__(**kwargs)
 
         user = self.request.user
-        self.add_history_field('template', None, models.PageTemplate, instance.template)
-        self.add_history_field('theme', None, models.PageTheme, instance.theme)
-        self.add_history_field('arc', None, models.ComicArc, instance.arc)
-        self.add_history_field('owner', user, models.Alias, instance.owner)
+        defaults = {}
+        if instance is not None:
+            defaults = {
+            'template': instance.template,
+            'theme': instance.theme,
+            'arc': instance.arc,
+            'owner': instance.owner
+            }
+
+        self.add_history_field('template', None, models.PageTemplate, defaults.get('template','auto'))
+        self.add_history_field('theme', None, models.PageTheme, defaults.get('theme', 'auto'))
+        self.add_history_field('arc', None, models.ComicArc, defaults.get('arc', 'auto'))
+        self.add_history_field('owner', user, models.Alias, defaults.get('owner', 'auto'))
 
 
         return result

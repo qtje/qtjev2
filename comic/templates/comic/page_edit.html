@@ -22,7 +22,7 @@ Editing Page {{ form.page_key.value }}
 
 
 {% block body %}
-<form class="AuthorForm" method="post" action="{% url 'comic:edit_page' form.page_key.value %}" >
+<form class="AuthorForm" enctype="multipart/form-data" method="post" action="{% if form.is_create %}{% url 'comic:create_page' %}{% else %}{% url 'comic:edit_page' form.page_key.value %}{% endif %}" >
 {% csrf_token %}
 
 {% if form.non_field_errors %}
@@ -79,7 +79,11 @@ Editing Page {{ form.page_key.value }}
 <div class="AuthorFormDivider">
 
 <center>
+{% if form.is_create %}
     <input type="submit" value="Create Page">
+{% else %}
+    <input type="submit" value="Update Page">
+{% endif %}
 </center>
 
 </div>
