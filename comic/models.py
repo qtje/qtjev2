@@ -17,7 +17,6 @@ import django.utils
 
 """
 I need to audit owner alias management to make sure it's rendering dated versions properly and using hk's for direct comparisons rather than instances.
-    links,arcs,templates,themes not using current alias display name
 
 I need a story arcs listing page.<F6><F6>
 
@@ -70,11 +69,12 @@ class OwnedHistory(models.Model):
             super().save(*args, **kwargs)
 
 
-    def as_of(self, date):
-        result =  self.__class__.objects.filter(
-                    hk = self.hk).order_by(
-                    '-created_at').filter(created_at__lte=date)[0]
-        return result
+    def as_of(self, date=None):
+        result = self.__class__.objects.filter(hk = self.hk).order_by('-created_at')
+
+        if date is not None:
+            result =  result.filter(created_at__lte=date)
+        return result[0]
 
     def is_owned_by(self, user):
         return self.owner.owner.user == user
@@ -225,6 +225,7 @@ class Alias(OwnedHistory, Searchable):
         return f'{self.display_name} ({self.owner})'
 
     def search_string(self):
+        self = self.as_of()
         return f'{self.display_name}'
 
 
