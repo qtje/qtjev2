@@ -3,7 +3,7 @@ import dateutil.parser
 
 from django.shortcuts import render
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 from django.views import generic
 
@@ -68,6 +68,26 @@ class ComicView(generic.DetailView):
 
             result.body = body
             return result
+
+forum_filter = str.maketrans({x: None for x in ',.:;\'"'})
+
+def do_forum_post(request):
+    if request.method != 'POST': return
+
+    text = request.POST.get('comment', '')
+    return_path = request.POST.get('return')
+    source_key = request.POST.get('source')
+
+    source = ComicPage.objects.filter(page_key=source_key)[0]
+
+    text = text.lower()
+    text = text.translate(forum_filter)
+
+    post = models.ForumPost(text=text, source=source)
+    
+    post.save()
+
+    return HttpResponseRedirect(return_path)
 
 def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")

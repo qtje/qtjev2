@@ -16,15 +16,11 @@ from simple_history.models import HistoricalRecords
 I would like to make the django admin be able to show only the latest versions
 of Historied models.
 
-I need to be able to hide created_at and hk fields in admin.
-
 Need to actually implement themes, but this probably comes after finalizing layout
 
 Need to do actual layout.
 
 Need a set of pages for authors to use to make changes. I think I just need to take complete control over the forms available to authors rather than using the admin site. This way I can more clearly define the actions and author can take and create UX that's tailored to making those actions managable.
-
-Need to implement forums
 
 """
 
@@ -228,6 +224,6 @@ class ForumPost(models.Model):
     A single forum post
     """
     text = models.TextField()
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(auto_now = True)
     source = models.ForeignKey(ComicPage, on_delete = models.CASCADE, related_name = 'forum_posts')
 

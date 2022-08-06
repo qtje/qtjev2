@@ -55,6 +55,14 @@ Page Author:<br>
 {% endblock %}
 
 {% block forums %}
+<form action="post" method=post>
+{% csrf_token %}
+<input type="hidden" value="{{ request.get_full_path }}" name="return">
+<input type="hidden" value="{{ object.page_key }}" name="source">
+comment: <input type="text" name="comment" size="108" style="max-width:100%;"> 
+<input type="submit" value="post">
+</form>
+<br>
     {% for post in object.forums %}
         <p>{{post.text}}</p>
     {% endfor %}
