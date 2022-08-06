@@ -131,6 +131,8 @@ class OwnedHistory(models.Model):
 
     @classmethod
     def get_next_hk(cls):
+        if cls.objects.count() == 0:
+            return 0
         latest = max(cls.objects.all(), key = lambda x: x.hk)
         return latest.hk+1
         
