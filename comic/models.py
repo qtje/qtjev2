@@ -256,6 +256,8 @@ class ComicArc(OwnedHistory, Searchable):
     def search_string(self):
         return f'{self.display_name} ({self.slug_name}) ({self.owner.search_string()})'
 
+    class Meta:
+        unique_together = ('slug_name', 'display_name')
 
 
 

@@ -81,6 +81,17 @@ class MyForm(forms.ModelForm):
         if not instance is None:
             self.initial[name] = instance.search_key()
 
+    def save(self, commit=True):
+        if self.is_create:
+            self.instance.hk = self.Meta.model.get_next_hk()
+            owner = models.Author.objects.get(user=self.request.user)
+            self.instance.owner_id = owner.id
+
+        instance = super().save(commit)
+
+        return instance
+
+
 
 
 class PageEditForm(MyForm):
@@ -119,7 +130,7 @@ class PageEditForm(MyForm):
         self.instance.template_id = self.cleaned_data['template'].id
         self.instance.theme_id = self.cleaned_data['theme'].id
 
-        return super().save(commit)
+        return forms.ModelForm.save(self, commit)
 
     class Meta:
         model = models.ComicPage
@@ -182,8 +193,44 @@ class PageCreateForm(PageEditForm):
 
         return instance
 
+
+
 #
+# Arc edit
 #
+
+class ArcEditForm(MyForm):
+
+    is_create = False
+    post_url = 'comic:edit_arc'
+
+    button = 'Update Story Arc'
+
+    def __init__(self, **kwargs):
+        instance = kwargs['instance']
+        if not self.is_create:
+            self.heading = f'Editing story arc {instance.display_name} {(instance.slug_name)}'
+        return super().__init__(**kwargs)
+
+    class Meta:
+        model = models.ComicArc
+        exclude = ['hk', 'owner']
+        widgets = {
+            'slug_name': forms.TextInput,
+            'display_name': forms.TextInput
+        }
+
+class ArcCreateForm(ArcEditForm):
+
+    is_create = True
+    post_url = 'comic:edit_arc'
+
+    heading = 'Creating new story arc'
+    button = 'Create Story Arc'
+
+
+#
+# Alias edit
 #
 
 class AliasEditForm(MyForm):
@@ -214,14 +261,6 @@ class AliasCreateForm(AliasEditForm):
     heading = 'Creating new alias'
     button = 'Create Alias'
 
-    def save(self, commit=True):
-        self.instance.hk = models.Alias.get_next_hk()
-        owner = models.Author.objects.get(user=self.request.user)
-        self.instance.owner_id = owner.id
-
-        instance = super().save(commit)
-
-        return instance
 
 
 

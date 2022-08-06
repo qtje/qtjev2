@@ -26,7 +26,10 @@ Editing Page {{ form.page_key.value }}
 {% csrf_token %}
 
 {% if form.non_field_errors %}
-<div class="AuthorFormDivider AFFormError">
+<div class="AFLabel">
+Errors
+</div>
+<div class="AFField AFFormError">
 {{ form.non_field_errors }}
 </div>
 {% endif %}

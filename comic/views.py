@@ -193,7 +193,7 @@ class GenericEditView(LoginRequiredMixin, generic.edit.UpdateView):
     def get_object(self, queryset = None):
         result = self.model.get_latest(self.kwargs['hk'])
         #TODO: Make this more better
-        assert result.owner.user == self.request.user
+        assert result.is_owned_by(self.request.user)
         return result
 
     def get_form_kwargs(self):
@@ -213,6 +213,18 @@ class GenericCreateView(LoginRequiredMixin, generic.edit.CreateView):
         result = super().get_form_kwargs()
         result['request'] = self.request
         return result
+
+class ArcEditView(GenericEditView):
+    success_url = reverse_lazy('comic:list_arcs')
+    model = models.ComicArc
+    form_class = forms.ArcEditForm
+
+class ArcCreateView(GenericCreateView):
+    success_url = reverse_lazy('comic:list_arcs')
+    model = models.ComicArc
+    form_class = forms.ArcCreateForm
+
+
 
 class AliasEditView(GenericEditView):
     success_url = reverse_lazy('comic:list_aliases')
@@ -381,8 +393,8 @@ class AliasEditListView(EditListView):
 
 class ArcEditListView(EditListView):
     model = models.ComicArc
-    edit_url = 'comic:page'
-    new_url = 'comic:index'
+    edit_url = 'comic:edit_arc'
+    new_url = 'comic:edit_arc'
     new_link_text = 'New Story Arc'
 
     def render_table_map(self, object_list):
