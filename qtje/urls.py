@@ -25,6 +25,9 @@ urlpatterns = [
     path('', include('comic.urls')),
     path(r'admin/', admin.site.urls),
 
+    path('user/password_change', auth_views.PasswordChangeView.as_view(template_name='comic/password_reset.html', extra_context = {'header': 'Password Update', 'button': 'Update'}), name='password_change'),
+    path('user/password_change_done', auth_views.PasswordChangeDoneView.as_view(template_name='comic/password_reset.html', extra_context = {'header': 'Password Update', 'information': 'Your password has been updated.'}), name='password_change_done'),
+
     path('user/password_reset', auth_views.PasswordResetView.as_view(template_name='comic/password_reset.html', extra_context = {'information': 'Enter your email address below. You will receive an email with a link to reset your password.'}), name='password_reset'),
 
    path('user/password_reset_done', auth_views.PasswordResetDoneView.as_view(template_name='comic/password_reset.html', extra_context = {'information': 'An email was sent to the address you entered.'}), name='password_reset_done'),

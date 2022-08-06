@@ -56,9 +56,17 @@ Hello <br>
 <div class="NavR BigTextWrap">
     l <a href="{% url 'comic:list_templates' %}">TEMPLATES</a>
     l <a href="{% url 'comic:list_themes' %}">THEMES</a>
-
-
 </div>
+    <div class="NavRR AuthorHelpWrap">
+    ?
+    <div class="AuthorHelpDropdown">
+    <a href = "">Getting Started</a><br>
+    <a href = "">Comic Structure</a><br>
+    <a href = "">Customization</a><br>
+    <a href = "{% url 'password_change' %}">Change Password</a>
+    </div>
+
+    </div>
 </div>
 </div>
 

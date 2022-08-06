@@ -177,9 +177,43 @@ img.profile
     margin-left: 1px;
     margin-right: 1px;
 }
+
 .SearchWrap
 {
     margin:2px;
+}
+
+.AuthorHelpWrap
+{
+    font-size: 26px;
+    width: 26px;
+    height: 26px;
+    margin-top: 3px;
+    margin-right: 3px;
+    border: 1px solid black;
+    text-align: center;
+    position: relative;
+    color:#36C;
+}
+.AuthorHelpDropdown
+{
+font-size: 26px;
+display: none;
+position: absolute;
+top: 28px;
+right: -5px;
+border: 1px solid black;
+z-index: 10;
+width: max-content;
+padding: 4px;
+padding-bottom: 0px;
+background: #ffff;
+text-align:right;
+}
+
+.AuthorHelpWrap:hover .AuthorHelpDropdown
+{
+display:block;
 }
 
 .rss
