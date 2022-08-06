@@ -16,15 +16,22 @@ import django.utils
 # Create your models here.
 
 """
+I need to audit owner alias management to make sure it's rendering dated versions properly and using hk's for direct comparisons rather than instances.
+
 Need to implement authors and forum views
 
 Need to implement error pages
 
 Need a tutorial page for authors
 
+Need to fix stray ? in link urls when there's no querystring.
+
+I should actually ditch the dropdown for the help menu and just have a help landing page that it's a link to. That way you don't have to be able to hover to access these pages. Though idk if I rly care much about accessing this site on phones.
+
 It might be nice to have a memory of the user's last-used templates, arcs, etc to autopopulate the page creation form.
 
 It's possible I should like make the Alias model have a user property that returns its owner's user in order to make ownership checking more consistent and less error-prone
+
 """
 
 
@@ -180,7 +187,7 @@ class Alias(OwnedHistory, Searchable):
     owner = models.ForeignKey(Author, on_delete = models.CASCADE, related_name = 'aliases')
 
     conflict_icon = '⚠'
-    warning = f'<span title="This author name is used by multiple authors">{conflict_icon}</span>'
+    warning = f'<span title="This name is used by multiple authors">{conflict_icon}</span>'
 
     def is_conflicted(self):
         count = Alias.objects.filter(display_name=self.display_name).count()
@@ -424,15 +431,23 @@ class ComicPage(OwnedHistory, Searchable):
         except IndexError:
             return None
 
+        print(date)
 
+        result.owner = result.owner.as_of(date)
+
+        print(result.links_from.all())
+        for entry in result.links_from.all():
+            print(entry.deleted_at)
+            print(entry.created_at)
         links_from = result.links_from.exclude(deleted_at__lte=date).exclude(created_at__gt=date)
+        print(links_from)
 
         result.next_links = links_from.filter(kind='n')
         result.prev_links = links_from.filter(kind='p')
         result.first_links = links_from.filter(kind='f')
 
         def order_key(x):
-            return [x.owner != result.owner, x.created_at]
+            return [x.owner.hk != result.owner.hk, x.created_at]
 
         result.next_links = sorted(result.next_links, key = order_key)
         result.prev_links = sorted(result.prev_links, key = order_key, reverse=True)
@@ -518,7 +533,7 @@ class ComicLink(models.Model):
     """
     The contents of a page link at a point in time
     """
-    created_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
     owner = models.ForeignKey(Alias, on_delete = models.CASCADE, related_name = 'owned_links')
     LINK_KINDS = {
@@ -549,7 +564,7 @@ class ComicLink(models.Model):
     @classmethod
     def get_all_latest(cls, user, key=None):
         result = cls.objects
-        result.filter(deleted_at__isnull=True)
+        result = result.filter(deleted_at__isnull=True)
         if user is not None:
             result = cls.filter_owner(result, user)
         result = result.order_by('-created_at')

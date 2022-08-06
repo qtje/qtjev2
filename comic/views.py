@@ -42,6 +42,8 @@ def process_date(date):
         date = datetime.datetime.now(datetime.timezone.utc)
     else:
         date = dateutil.parser.parse(date)
+        if date.tzinfo is None:
+            date = date.replace(tzinfo=datetime.timezone.utc)
     return date
 
 class ComicView(generic.DetailView):
@@ -286,6 +288,12 @@ class LinkDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
             raise PermissionDenied
         return result
 
+    def form_valid(self, form):
+        success_url = self.get_success_url()
+        self.object.deleted_at = datetime.datetime.now(datetime.timezone.utc)
+        self.object.save()
+
+        return HttpResponseRedirect(success_url)
 
 class ArcEditView(GenericEditView):
     success_url = reverse_lazy('comic:list_arcs')
