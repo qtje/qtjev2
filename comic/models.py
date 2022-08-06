@@ -89,7 +89,16 @@ class OwnedHistory(models.Model):
 
         return list(res_map.values())
         
-    
+class Searchable():
+
+    def search_string(self):
+        return str(self)
+
+    def search_index(self):
+        return self.id
+
+    def search_key(self):
+        return f'{self.search_index()}|{self.search_string()}'
 
 def history_post_save(**kwargs):
     """
@@ -188,7 +197,7 @@ class ComicArc(OwnedHistory):
         return f'{self.display_name} ({self.slug_name}) - {self.owner}'
 
 
-class ComicPage(OwnedHistory):
+class ComicPage(OwnedHistory, Searchable):
     """
     The contents of a page at a point in time.
     """
@@ -226,6 +235,12 @@ class ComicPage(OwnedHistory):
             models.Model.save(self, *args, **kwargs)
         else:
             models.Model.save(self, *args, **kwargs)
+
+    def search_string(self):
+        return f'Page {self.page_key}: {self.title}'
+
+    def search_index(self):
+        return self.page_key
 
     def __str__(self):
         self.old_from = self.links_from.all()

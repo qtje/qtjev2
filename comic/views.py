@@ -16,7 +16,45 @@ import simple_history
 from . import models
 from .models import ComicPage, ForumPost
 
+from . import forms
+
 # Create your views here.
+
+#
+# Primary Page Views (For Users)
+#
+
+def process_date(date):
+    """
+    For handling optional dates passed by querystring
+    Take a date string and turn it into a datetime object.
+    If the date_str is None, return the current date instead.
+    """
+    if date is None:
+        date = datetime.datetime.now(datetime.timezone.utc)
+    else:
+        date = dateutil.parser.parse(date)
+    return date
+
+
+def get_comic_page(date, page_key_str):
+    """
+    Retrieve a comic page by its page key and the target date.
+    Enforce format of the page key
+    """
+    try:
+        page_key = int(page_key_str, 16)
+        page_key = f'{page_key:04}'
+        pages =  models.ComicPage.objects.filter(
+                    page_key=page_key).order_by(
+                    '-created_at').filter(created_at__lte=date)
+        result = pages[0]
+        result.first_version = pages.order_by('created_at')[0]
+    except IndexError:
+        return None
+
+    return result
+
 
 class ComicView(generic.DetailView):
     model = ComicPage 
@@ -25,22 +63,11 @@ class ComicView(generic.DetailView):
     def get_object(self, queryset = None):
 
         date = self.request.GET.get('date', None)
-        if date is None:
-            date = datetime.datetime.now(datetime.timezone.utc)
-        else:
-            date = dateutil.parser.parse(date)
+        page_key_str = self.kwargs.get('pk', '0')
 
-        try:
-            page_key = int(self.kwargs.get('pk', '0'), 16)
-            page_key = f'{page_key:04}'
-            pages =  models.ComicPage.objects.filter(
-                        page_key=page_key).order_by(
-                        '-created_at').filter(created_at__lte=date)
-            result = pages[0]
-            result.first_version = pages.order_by('created_at')[0]
-        except IndexError:
-            return None
-                    
+        date = process_date(date)
+        result = get_comic_page(date, page_key_str)
+ 
         if result is not None:
 
             result.querystring = self.request.GET.urlencode()
@@ -82,6 +109,53 @@ class ComicView(generic.DetailView):
 
 forum_filter = str.maketrans({x: None for x in ',.:;\'"'})
 
+def do_forum_post(request):
+    if request.method != 'POST': return
+
+    text = request.POST.get('comment', '')
+    return_path = request.POST.get('return')
+    source_key = request.POST.get('source')
+
+    source = ComicPage.objects.filter(page_key=source_key)[0]
+
+    text = text.lower()
+    text = text.translate(forum_filter)
+
+    post = models.ForumPost(text=text, source=source)
+    
+    post.save()
+
+    return HttpResponseRedirect(return_path)
+
+#
+# 
+#
+
+#
+# Entity Create/Edit Views (For Authors)
+#
+
+class PageEditView(LoginRequiredMixin, generic.edit.UpdateView):
+    login_url = '/login'
+
+    model = ComicPage
+    template_name = 'comic/page_edit.html'
+    form_class = forms.PageEditForm
+ 
+    def get_object(self, queryset = None):
+
+        page_key_str = self.kwargs.get('pk', '0')
+
+        date = process_date(None)
+        result = get_comic_page(date, page_key_str)
+
+        return result
+ 
+
+#
+# Entity List Views (For Authors)
+#
+
 class EditListView(LoginRequiredMixin, generic.ListView):
     login_url = '/login'
     model = ComicPage
@@ -112,7 +186,7 @@ class PageEditListView(EditListView):
     model = ComicPage
     hk = 'page_key'
     view_url = 'comic:page'
-    edit_url = 'comic:page'
+    edit_url = 'comic:edit_page'
     new_url = 'comic:index'
     new_link_text = 'New Page'
 
@@ -234,26 +308,9 @@ class AliasEditListView(EditListView):
 
 
 
-
-
-    
-def do_forum_post(request):
-    if request.method != 'POST': return
-
-    text = request.POST.get('comment', '')
-    return_path = request.POST.get('return')
-    source_key = request.POST.get('source')
-
-    source = ComicPage.objects.filter(page_key=source_key)[0]
-
-    text = text.lower()
-    text = text.translate(forum_filter)
-
-    post = models.ForumPost(text=text, source=source)
-    
-    post.save()
-
-    return HttpResponseRedirect(return_path)
-
+#
+#
+#
+   
 def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")

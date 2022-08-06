@@ -1,0 +1,40 @@
+{% extends "comic/base.html" %}
+
+
+{% block left_links %}
+{% endblock %}
+
+{% block center_links %}
+<div class="BigTextWrap">
+    <a href = "">
+        Do It
+    </a>
+</div>
+{% endblock %}
+
+{% block right_links %}
+{% endblock %}
+
+{% block nav_right %}
+{% endblock %}
+
+
+{% block body %}
+<form>
+{% csrf_token %}
+{{ form.as_p }}
+</form>
+{% endblock %}
+
+
+{% block meta_left %}
+{% endblock %}
+
+{% block meta_right %}
+{% endblock %}
+
+
+{% block forums %}
+{% endblock %}
+
+
