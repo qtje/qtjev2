@@ -1,0 +1,49 @@
+{% extends "comic/base.html" %}
+{% load static %}
+
+{% block left_links %}
+<div class="BigTextWrap">
+<a href = "{% url 'comic:help' 'quickstart' %}">Quickstart</a>
+l
+</div>
+{% endblock %}
+
+{% block center_links %}
+<div class="BigTextWrap">
+<a href = "{% url 'comic:help' 'structure' %}">Comic Structure</a>
+l
+</div>
+{% endblock %}
+
+{% block right_links %}
+<div class="BigTextWrap">
+<a href = "{% url 'comic:help' 'customization' %}">Customization</a>
+</div>
+{% endblock %}
+
+{% block nav_right %}
+<div class="SmallTextWrap">
+<a href = "{% url 'password_change' %}">Change<br>
+Password</a>
+</div>
+{% endblock %}
+
+
+{% block body %}
+<div style='margin: 0px auto; width:min-content'>
+{{ content|safe }}
+</div>
+{% endblock %}
+
+
+{% block meta_left %}
+{% endblock %}
+
+{% block meta_right %}
+{% endblock %}
+
+
+{% block forums %}
+{% endblock %}
+
+

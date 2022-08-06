@@ -17,6 +17,8 @@ urlpatterns = [
 
     path('rss', views.PageFeed(), name='rss'),
 
+    path('help/<str:pk>', views.HelpPageView.as_view(), name='help'),
+
     path('edit/page/<str:pk>', views.PageEditView.as_view(), name='edit_page'),
     path('edit/page', views.PageCreateView.as_view(), name='create_page'),
 

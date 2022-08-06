@@ -1,7 +1,10 @@
+import os
 import mimetypes
 import urllib.parse
 import datetime
 import dateutil.parser
+
+import markdown
 
 from django.shortcuts import render
 
@@ -20,6 +23,8 @@ from django.contrib.syndication.views import Feed
 from django.urls import reverse_lazy
 
 from django.utils.feedgenerator import Enclosure
+
+from django.conf import settings
 
 from . import models
 from .models import ComicPage, ForumPost
@@ -181,6 +186,28 @@ class ForumView(generic.ListView):
     model = models.ForumPost
     paginate_by = 100
 
+#
+# Help View (For Authors)
+#
+
+class HelpPageView(LoginRequiredMixin, generic.TemplateView):
+    login_url = '/login'
+    template_name = 'comic/help_page.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = kwargs.get('pk', 'quickstart') 
+        
+        filename = os.path.join(settings.MEDIA_ROOT, f'help/{pk}.md')
+        
+        md = markdown.Markdown(extensions=['extra', 'sane_lists', 'nl2br'])
+        with open(filename, 'r') as fp:
+            data = fp.read()
+        data = '{% load static %}\n'+data
+        data = Template(data).render(Context(context))
+        context['content'] = md.convert(data)
+
+        return context
 
 #
 # Entity Create/Edit Views (For Authors)

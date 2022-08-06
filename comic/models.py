@@ -18,15 +18,17 @@ import django.utils
 """
 I need to audit owner alias management to make sure it's rendering dated versions properly and using hk's for direct comparisons rather than instances.
 
-Need to implement error pages
+I need a story arcs listing page.<F6><F6>
 
-Need a tutorial page for authors
+Need to implement error pages
 
 Need to fix stray ? in link urls when there's no querystring.
 
-I should actually ditch the dropdown for the help menu and just have a help landing page that it's a link to. That way you don't have to be able to hover to access these pages. Though idk if I rly care much about accessing this site on phones.
-
 It might be nice to have a memory of the user's last-used templates, arcs, etc to autopopulate the page creation form.
+
+Need a tutorial page for authors
+
+I should actually ditch the dropdown for the help menu and just have a help landing page that it's a link to. That way you don't have to be able to hover to access these pages. Though idk if I rly care much about accessing this site on phones.
 
 It's possible I should like make the Alias model have a user property that returns its owner's user in order to make ownership checking more consistent and less error-prone
 
