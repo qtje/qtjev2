@@ -1,0 +1,72 @@
+{% extends "comic/base.html" %}
+
+
+{% block left_links %}
+{% endblock %}
+
+{% block center_links %}
+<div class="BigTextWrap">
+    Deleting Link
+</div>
+{% endblock %}
+
+{% block right_links %}
+{% endblock %}
+
+{% block nav_right %}
+{% endblock %}
+
+
+{% block body %}
+<form class="AuthorForm" enctype="multipart/form-data" method="post" >
+{% csrf_token %}
+
+<div class="AuthorFormDivider">
+<center>
+    The following link will be deleted:
+</center>
+</div>
+
+<div class="AFLabel">
+    Kind
+</div>
+<div class="AFField">
+    {{ object.kind_name }}
+</div>
+
+<div class="AFLabel">
+    From Page
+</div>
+<div class="AFField">
+    {{ object.from_page.search_string }}
+</div>
+<div class="AFLabel">
+    To Page
+</div>
+<div class="AFField">
+    {{ object.to_page.search_string }}
+</div>
+
+{{ form }}
+
+<div class="AuthorFormDivider">
+<center>
+    <input type="submit" value="Delete Link">
+</center>
+</div>
+
+</form>
+{% endblock %}
+
+
+{% block meta_left %}
+{% endblock %}
+
+{% block meta_right %}
+{% endblock %}
+
+
+{% block forums %}
+{% endblock %}
+
+

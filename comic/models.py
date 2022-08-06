@@ -482,14 +482,17 @@ class ComicLink(models.Model):
     deleted_at = models.DateTimeField(blank=True, null=True)
     owner = models.ForeignKey(Alias, on_delete = models.CASCADE, related_name = 'owned_links')
     LINK_KINDS = {
-        'n': 'next',
-        'p': 'prev',
-        'f': 'first',
+        'n': 'Next',
+        'p': 'Previous',
+        'f': 'First',
         }
 
     from_page = models.ForeignKey(ComicPage, on_delete = models.CASCADE, related_name = 'links_from')
     to_page = models.ForeignKey(ComicPage, on_delete = models.CASCADE, related_name = 'links_to')
     kind = models.TextField(choices=LINK_KINDS.items())
+
+    def kind_name(self):
+        return self.LINK_KINDS[self.kind]
 
     def is_owned_by(self, user):
         return self.owner.owner.user == user

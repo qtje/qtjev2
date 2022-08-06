@@ -219,6 +219,19 @@ class LinkCreateView(GenericCreateView):
     model = models.ComicLink
     form_class = forms.LinkCreateForm
 
+class LinkDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
+    login_url = '/login'
+    success_url = reverse_lazy('comic:list_links')
+    model = models.ComicLink
+    template_name = 'comic/link_delete.html'
+
+    def get_object(self, queryset = None):
+        result = self.model.objects.get(id=self.kwargs['pk'])
+        #TODO: Make this more better
+        assert result.is_owned_by(self.request.user)
+        return result
+
+
 class ArcEditView(GenericEditView):
     success_url = reverse_lazy('comic:list_arcs')
     model = models.ComicArc
@@ -324,7 +337,7 @@ class PageEditListView(EditListView):
 
 class LinkEditListView(EditListView):
     model = models.ComicLink
-    edit_url = 'comic:page'
+    edit_url = 'comic:delete_link'
     new_url = 'comic:edit_link'
     new_link_text = 'New Link'
     edit_link_text = 'Delete'

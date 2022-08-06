@@ -285,7 +285,6 @@ class LinkCreateForm(MyForm):
         }
 
 
-
 #
 # Arc edit
 #
