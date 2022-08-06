@@ -175,6 +175,10 @@ class HistoryText(OwnedHistory):
 class Author(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete = models.CASCADE)
 
+    def as_of(self, date):
+        #look, okay
+        return self
+
     def __str__(self):
         return f'{self.user}'
 

@@ -406,10 +406,16 @@ class EditListView(LoginRequiredMixin, generic.ListView):
     edit_link_text = 'Edit'
 
     def get_queryset(self):
-        return self.model.get_all_latest(self.request.user, self.hk)
+        result = self.model.get_all_latest(self.request.user, self.hk)
+        date = process_date(None)
+        for entry in result:
+            entry.owner = entry.owner.as_of(date)
+        return result
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
+
+        self.date = process_date(None)
 
         result['table_map'] = self.render_table_map(result['object_list'])
         result['edit_url'] = self.edit_url
