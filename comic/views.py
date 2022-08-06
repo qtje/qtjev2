@@ -124,7 +124,7 @@ class AuthorsView(generic.ListView):
             pages = models.ComicPage.objects.filter(owner = entry).order_by('-page_key')
             if not entry.display_name in object_list.keys():
                 author_entry = {
-                    'full_display_name': entry.full_display_name(),
+                    'name': entry.sanitize(),
                     }
                 if len(pages) > 0:
                     author_entry['last'] = pages[0]
@@ -161,7 +161,7 @@ class PageEditView(LoginRequiredMixin, generic.edit.UpdateView):
 
         date = process_date(None)
         try:
-            result = models.ComicPage.get_view_page(date, page_key_str)
+            result = models.ComicPage.get_view_page(date, page_key_str, sanitize = False)
         except ValueError:
             result = None
 

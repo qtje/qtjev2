@@ -11,6 +11,8 @@ from django.template import Template, Context
 
 from django.urls import reverse
 
+import django.utils
+
 # Create your models here.
 
 """
@@ -85,6 +87,14 @@ class OwnedHistory(models.Model):
 
     def get_hk_value(self):
         return getattr(self,self.default_hk)
+
+    def sanitize(self):
+        """
+        Replaces anything that shouldn't get sent to a user template
+        """
+        self.author = self.owner.sanitize()
+        self.owner = None
+        return self
 
     @staticmethod
     def filter_owner(queryset, user):
@@ -179,7 +189,8 @@ class Alias(OwnedHistory, Searchable):
     display_name = models.TextField()
     owner = models.ForeignKey(Author, on_delete = models.CASCADE, related_name = 'aliases')
 
-    warning = '<span title="This author name is used by multiple authors">&#x26A0;</span>'
+    conflict_icon = '⚠'
+    warning = f'<span title="This author name is used by multiple authors">{conflict_icon}</span>'
 
     def is_conflicted(self):
         count = Alias.objects.filter(display_name=self.display_name).count()
@@ -192,7 +203,24 @@ class Alias(OwnedHistory, Searchable):
         if not self.is_conflicted():
             return self.display_name
         else:
-            return self.warning + ' ' + self.display_name
+            return self.conflict_icon + ' ' + self.display_name
+
+
+    def sanitize(self):
+        """
+        Returns a dictionary of values that can be used to safely render aliases
+        in user-generated templates.
+        """
+        result = {}
+        display_name_safe = django.utils.html.conditional_escape(self.display_name)
+        if not self.is_conflicted():
+            result['simple_name'] = display_name_safe
+            result['html_name'] = display_name_safe
+        else:
+            result['simple_name'] = self.conflict_icon + ' ' + display_name_safe
+            result['html_name'] = self.warning + ' ' + display_name_safe
+        return result
+
 
     @staticmethod
     def filter_owner(queryset, user):
@@ -373,8 +401,23 @@ class ComicPage(OwnedHistory, Searchable):
         return theme_values
 
 
+    def sanitize(self):
+        self.author = self.owner.sanitize()
+        self.owner = None
+
+        self.next_links = [x.sanitize() for x in self.next_links] 
+        self.prev_links = [x.sanitize() for x in self.prev_links] 
+        self.first_links = [x.sanitize() for x in self.first_links] 
+
+        self.arc = self.arc.sanitize()
+
+        self.template = self.template.sanitize()
+        self.theme = self.theme.sanitize()
+
+        return self
+
     @classmethod
-    def get_view_page(cls, date, page_key_str):
+    def get_view_page(cls, date, page_key_str, sanitize = True):
         """
         Retrieve a comic page by its page key and the target date.
         If the page exists, prepare it for rendering by a template
@@ -400,7 +443,9 @@ class ComicPage(OwnedHistory, Searchable):
         result.first_links = links_from.filter(kind='f')
 
         result.arc = result.arc.as_of(date)
-
+    
+        if sanitize:
+            result = result.sanitize()
         return result
 
     @classmethod
@@ -499,6 +544,11 @@ class ComicLink(models.Model):
     @staticmethod
     def filter_owner(queryset, user):
         return queryset.filter(owner__owner__user=user)
+
+    def sanitize(self):
+        self.author = self.owner.sanitize()
+        self.owner = None
+        return self
 
     @classmethod
     def get_all_latest(cls, user, key=None):

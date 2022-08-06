@@ -26,8 +26,8 @@
 </tr>
 {% for alias in object_list %}
 <tr>
-    <td>
-    {{ alias.full_display_name|safe }}
+    <td>{{alias.conflict_icon}}
+    {{ alias.name.html_name|safe }}
     </td>
     <td>
     {% if alias.first %}
