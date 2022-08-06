@@ -61,9 +61,13 @@
 
 {% block nav_right %}
 <div class="SmallTextWrap">
-Page Author:<br>
-{{ object.owner.display_name }}
+{{ object.title }}<br>
+{% if object.owner.is_conflicted %}
+<span title="This author name is used by multiple authors">&#x26A0;</span>
+{% endif %}
+{{object.owner.display_name}} 
 </div>
+
 {% endblock %}
 
 
@@ -81,13 +85,12 @@ Story Arc:<br>
 
 {% block meta_right %}
 <div class="SmallTextWrap">
-Last Modified: <br>
-{{ object.created_at }}
+Page Posted: <br>
+{{ object.first_version.created_at|date:'Y-m-d'}}
 </div>
 {% endblock %}
 
 {% block forum_form %}
-
 <form action="post" method=post style="width:100%">
     <div class="ForumForm">
         {% csrf_token %}

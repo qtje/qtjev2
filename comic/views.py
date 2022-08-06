@@ -24,14 +24,16 @@ class ComicView(generic.DetailView):
 
         date = self.request.GET.get('date', None)
         if date is None:
-            date = datetime.datetime.utcnow()
+            date = datetime.datetime.now(datetime.timezone.utc)
         else:
             date = dateutil.parser.parse(date)
 
         try:
-            result =  models.ComicPage.objects.filter(
+            pages =  models.ComicPage.objects.filter(
                         page_key=self.kwargs.get('pk', '0000')).order_by(
-                        '-created_at').filter(created_at__lte=date)[0]
+                        '-created_at').filter(created_at__lte=date)
+            result = pages[0]
+            result.first_version = pages.order_by('created_at')[0]
         except IndexError:
             return None
                     

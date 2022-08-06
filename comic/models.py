@@ -16,9 +16,14 @@ from simple_history.models import HistoricalRecords
 I would like to make the django admin be able to show only the latest versions
 of Historied models.
 
-Need to actually implement themes, but this probably comes after finalizing layout
+Need to actually implement themes:
+I think this will basically consist of taking most of the blocks I have in the comic template,
+dumping them into a table, and then rendering them by hand before passing the rendered chunks  to
+the actual template.
 
-Need to do actual layout.
+Alternatively, maybe I can substitute the strings for a placeholder in the template and then render
+normally. I would like, for example, the link theme template to be for a single link so I can
+ensure that all links will always be rendered regardless of theme.
 
 Need a set of pages for authors to use to make changes. I think I just need to take complete control over the forms available to authors rather than using the admin site. This way I can more clearly define the actions and author can take and create UX that's tailored to making those actions managable.
 
@@ -95,10 +100,17 @@ class Author(models.Model):
     def __str__(self):
         return f'{self.user}'
 
+
+
 class Alias(OwnedHistory):
     display_name = models.TextField()
     owner = models.ForeignKey(Author, on_delete = models.CASCADE, related_name = 'aliases')
     history = HistoricalRecords()
+
+    def is_conflicted(self):
+        count = Alias.objects.filter(display_name=self.display_name).count()
+        return count > 1
+
 
     def __str__(self):
         return f'{self.display_name} ({self.owner})'
