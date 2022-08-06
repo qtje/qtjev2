@@ -19,6 +19,9 @@ a.nav:hover {color: #3C6; text-decoration: none;}
 a.bork:link {color: #C33; text-decoration: none;}
 a.bork:visited {color: #C33; text-decoration: none;}
 a.bork:hover {color: #777; text-decoration: none;}
+a.navsym:link {color: #000; text-decoration: none;}
+a.navsym:visited {color: #000; text-decoration: none;}
+a.navsym:hover {color: #3C6; text-decoration: none; fill: #3C6}
 
 img.profile
 {
@@ -88,32 +91,121 @@ img.profile
 {
     margin-top: 0px;
 }
-#content div
+.content
 {
     padding: 0px;
     float: left;
 }
-#Navigation
+.Navigation
 {
      text-align: center;
      font-size: 26px;
      width: 814px;
      height: 32px;
      margin: 0px auto;
-     border-bottom: 1px solid #000000;
+//     border-bottom: 1px solid #000000;
      padding: 0px;
      position:relative;
+    display:flex;
 }
-#bNavigation
+.divider
 {
-     text-align: center;
-     font-size: 26px;
-     width: 814px;
-     height: 32px;
-     margin: 0px auto;
-     border-top: 1px solid #000000;
-     padding: 0px;
+    width: 100%;
+    height: 1px;
+    background: black;
 }
+.NavSide
+{
+    flex-grow: 1;
+    flex-basis: 0;
+}
+.NavLL
+{
+    font-size: 13px;
+    float: left;
+    display: inline;
+    position: absolute;
+    left: 0px;
+    text-align:left;
+    margin-left:1px;
+}
+.NavL
+{
+    float:right;
+    font-size: 0px;
+}
+.NavC
+{
+    font-size: 0px;
+}
+.NavR
+{
+    float:left;
+    font-size: 0px;
+}
+.NavRR
+{
+    margin-right: 1px;
+    font-size: 13px;
+    text-align: right;
+    float: right;
+    display: inline;
+    position: absolute;
+    right: 0px;
+}
+.PixelWrap
+{
+    margin: 1px;
+    display: inline-block;
+}
+.SmallTextWrap
+{
+    font-size: 13px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-left: 1px;
+    margin-right: 1px;
+}
+.BigTextWrap
+{
+    font-size: 26px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 1px;
+    margin-right: 1px;
+}
+.SearchWrap
+{
+    margin:2px;
+}
+
+.rss
+{
+    margin-right: 1px;
+    font-size: 0px;
+    position: relative; 
+}
+.rss-dropdown
+{
+font-size: 26px;
+display: none;
+position: absolute;
+top: 32px;
+left: -2px;
+border: 1px solid black;
+z-index: 10;
+width: max-content;
+padding: 4px;
+padding-bottom: 0px;
+background: #ffff;
+}
+
+.rss:hover .rss-dropdown
+{
+display:block;
+}
+
+
 #forum
 {
      text-align: left;
@@ -138,6 +230,7 @@ img.profile
 }
 div.SideUnit
 {
+    float: left;
 //     width: 78px;
      width: 160px;
      height: 600px;
@@ -146,6 +239,7 @@ div.SideUnit
 }
 #OuterWrapper
 {
+    float: left;
      width: 816px;
      border: 1px;// solid #000000;
 }

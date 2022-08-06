@@ -23,6 +23,7 @@ Need to do actual layout.
 Need a set of pages for authors to use to make changes. I think I just need to take complete control over the forms available to authors rather than using the admin site. This way I can more clearly define the actions and author can take and create UX that's tailored to making those actions managable.
 
 Need to work out how to have author accounts
+That stuff is all in https://docs.djangoproject.com/en/4.0/topics/auth/default/#module-django.contrib.auth.views
 """
 
 

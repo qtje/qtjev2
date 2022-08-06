@@ -13,7 +13,9 @@
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
     <link href="{% static 'comic/style.css' %}" type="text/css" rel=stylesheet id = "style1">
     <title>
-    qtje
+{% block title %}
+    qtjev2
+{% endblock %}
     </title>
   </head>
 <body>
@@ -33,50 +35,56 @@
 
 <!-- Navigation -->
 
-<div id="Navigation">
+<div class="Navigation" id="topnav">
 <!-- Navigation Left Side -->
 
-<div style="float:left; width:49%;">
+    <div class="NavSide">
 
-<!-- RSS Feed -->
+        <div class="NavLL">
 
-<div style="margin-right: 2px; font-size:0px;">
-<!--  <a href="feed.xml"> -->
-    <img src = "{% static 'comic/rss.png' %}" style="float:left;"/>
-<!--  </a> -->
+            <!-- RSS Feed -->
+            <div class ="rss">
+                <a href = "rss.xml">
+                <img src = "{% static 'comic/rss.png' %}" style="float:left;"/>
+                </a>
+                <div class="rss-dropdown">
+                    <a href="rss.xml">Main RSS Feed</a><br>
+                    {% block extra_rss_links %}
+                    {% endblock %}
+                </div>
+            </div>
+
+        </div>
+
+        <div class="NavL">
+        {% block left_links %}
+        {% endblock %}
+         </div>
+
+    </div>
+
+    <div class="NavC">
+    {% block center_links %}
+    {% endblock %}
+    </div>
+
+    <div class = "NavSide">
+        <div class="NavR">
+        {% block right_links %}
+        {% endblock %}
+        </div>
+
+        <!-- Next Update -->
+        <div class="NavRR">
+            {% block nav_right %}
+            Test:<br>Test
+            {% endblock %}
+        </div>
+    </div>
+
 </div>
 
-<!-- First/Prev Links -->
-
-  <div style="float:right;">
-{% block left_links %}
-&lt;&lt; <a class="nav" href="{}">FIRST</a> &lt; <a rel="prev" class="nav" href="{}" >PREV</a>
-{% endblock %}
-  </div>
-</div>
-
-<!-- Center divider -->
-{% block center_links %}
-  <div style="width: 2%;">
-    l
-  </div>   
-{% endblock %}
-
-<!-- Navigation Right Side -->
-
-<div style="float:right; width:49%;">
-  <div style="right:left;">
-{% block right_links %}
-<a rel="next" class="nav" href="{}">NEXT</a> &gt; <a class="nav" href="{}">CURR</a> &gt;&gt;
-{% endblock %}
-  </div>
-
-<!-- Next Update -->
-
-</div>
-
-</div>
-
+<div class="divider"></div>
 
 <!-- Main Body -->
 
@@ -89,78 +97,84 @@
 
 
 <!-- Bottom Bar -->
+<div class="divider"></div>
 
-<div id="bNavigation">
+<div class="Navigation" id="metanav">
 
 <!-- Story Arc -->
 
-<div style="float: left; text-align:left; font-size:13px; margin-right: 2px"> 
-{% block meta_left %}
-Story Arc:<br>
-TODO: ARC
-{% endblock %}
-</div>
+    <div class = "NavSide">
+        <div class="NavLL" >
+        {% block meta_left %}
+        {% endblock %}
+        </div>
+    </div>
 
 <!-- Search Form -->
 
-<div style="margin: 0 auto; float: none; display: inline-block;">
-<!-- Begin Ohnorobot.com Comic Transcription code for qtje -->
-<div>
-<script language="JavaScript" type="text/javascript" src="http://www.ohnorobot.com/js/2151.js"></script>
-<script language="JavaScript" type="text/javascript"><!--
-transcribe('apXeQVg67lWtc2151');
-// -->
-</script>
-</div>
-<!-- End Ohnorobot.com code -->
-
-<!-- Begin Ohnorobot.com Comic Search Box for qtje -->
-<div>
-<form action="http://www.ohnorobot.com/" method="get">
-<font size="2pt">
-<table border="0">
-<tr><td><input type="text" name="s" value="">
-<input type="hidden" name="comic" value="2151">
-<input type="submit" name="search" value="Search"></td><td align="center">Powered by <a href="http://www.ohnorobot.com/">OhNoRobot.com</a></td></tr>
-</table>
-</font>
-</form>
-</div>
-<!-- End Ohnorobot.com code -->
-</div>
+    <div class="BigTextWrap">
+    <a href = "{% url 'comic:authors' %}">AUTHORS</a> l <a href = "{% url 'comic:forum' %}">FORUM</a> l <a href = "{% url 'comic:archive' %}">GRAPH</a>
+    </div>
 
 <!-- Story Arc -->
 
-<div style="float: right; text-align:right; font-size:13px; margin-right: 2px"> 
-{% block meta_right %}
-{% endblock %}
-</div>
-
+    <div class="NavSide">
+        <div class="NavRR"> 
+            {% block meta_right %}
+            {% endblock %}
+        </div>
+    </div>
 
 </div>
 
 <!-- Navigation Bottom -->
+<div class="divider"></div>
 
-<div id="bNavigation">
-<a href = "{% url 'comic:authors' %}">AUTHORS</a> l <a href = "{% url 'comic:forum' %}">FORUM</a> l <a href = "{% url 'comic:archive' %}">GRAPH</a>
+<div class="Navigation" id="botnav">
+    <div class="NavSide"></div>
+
+    <!-- Begin Ohnorobot.com Comic Transcription code for qtje -->
+    <div class="SearchWrap">
+        <div>
+            <script language="JavaScript" type="text/javascript" src="http://www.ohnorobot.com/js/2151.js"></script>
+            <script language="JavaScript" type="text/javascript"><!--
+            transcribe('apXeQVg67lWtc2151');
+            // -->
+            </script>
+        </div>
+        <!-- End Ohnorobot.com code -->
+
+        <!-- Begin Ohnorobot.com Comic Search Box for qtje -->
+
+
+        <form action="http://www.ohnorobot.com/" method="get">
+        <font size="2pt">
+        <table border="0">
+        <tr><td><input type="text" name="s" value="">
+        <input type="hidden" name="comic" value="2151">
+        <input type="submit" name="search" value="Search"></td><td align="center">Powered by <a href="http://www.ohnorobot.com/">OhNoRobot.com</a></td></tr>
+        </table>
+        </font>
+        </form>
+        <!-- End Ohnorobot.com code -->
+    </div>
+
+    <div class="NavSide"></div>
 </div>
 
 </div>
-
 <!-- Forum Section TODO: Make this conditional -->
 
 <div id="forum">
 
 {% block forums %}
-TODO: render forum here
 {% endblock %}
-
 
 </div>
 
 <!-- Disclaimer -->
 
-<div id="forum" style="font-size:8px;">
+<div class="forum" style="font-size:8px;">
 Disclaimer: qtje  maintains no consistent or meaningful basis of sincerity, realism, causality, or morality. Readers are expected to use their own judgement in evaluating the content. These comics should not be taken as endorsements, nor should these characters be viewed as role models.<br>
 The qtje forum is unmoderated, and qtje takes no responsibility for the nature of any user generated content it may contain.
 </div>
