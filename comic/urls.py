@@ -13,6 +13,7 @@ urlpatterns = [
     path('post', views.do_forum_post),
 
     path('login', auth_views.LoginView.as_view(template_name='comic/author_login.html', next_page='comic:index'), name='login'),
+    path('logout', auth_views.LogoutView.as_view(next_page='comic:index'), name='logout'),
 
     path('edit/page/<str:pk>', views.PageEditView.as_view(), name='edit_page'),
     path('edit/page', views.PageCreateView.as_view(), name='create_page'),

@@ -30,11 +30,11 @@ Need to implement authors and forum views
 
 Need to implement rss feeds
 
-Need to restrict alias template rendering so it always includes the disputed annotation.
-
 Need to implement error pages
 
 Need a tutorial page for authors
+
+Need a password change system for authors
 """
 
 
