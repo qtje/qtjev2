@@ -265,3 +265,14 @@ div.SideUnit
      overflow: auto;
 }
 
+.ListTable
+{
+    width: 100%;
+}
+.ListTable tr td:first-child {
+    text-align:left;
+}
+.ListTable tr td:last-child {
+    text-align:right;
+}
+

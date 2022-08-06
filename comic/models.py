@@ -54,6 +54,7 @@ class OwnedHistory(models.Model):
         stamp = datetime.datetime.utcnow()
         force_update = kwargs.get('force_update', False)
         if not force_update and self.pk is not None:
+
             self.created_at = stamp
             self.pk = None
             self.id = None
@@ -68,6 +69,22 @@ class OwnedHistory(models.Model):
                     hk = self.hk).order_by(
                     '-created_at').filter(created_at__lte=date)[0]
         return result
+
+    @classmethod
+    def get_all_latest(cls, user, key='kh'):
+        result = cls.objects
+        if user is not None:
+            result = result.filter(owner__owner__user=user)
+        result = result.order_by(f'-{key}', '-created_at')
+    
+        res_map = {}
+        for entry in result:
+            keyval = getattr(entry,key)
+            if not keyval in res_map.keys():
+                res_map[keyval] = entry
+
+        return list(res_map.values())
+        
     
 
 def history_post_save(**kwargs):

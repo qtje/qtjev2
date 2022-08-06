@@ -9,6 +9,8 @@ from django.views import generic
 
 from django.template import Template, Context
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 import simple_history
 
 from . import models
@@ -29,8 +31,10 @@ class ComicView(generic.DetailView):
             date = dateutil.parser.parse(date)
 
         try:
+            page_key = int(self.kwargs.get('pk', 0), 16)
+            page_key = f'{page_key:04}'
             pages =  models.ComicPage.objects.filter(
-                        page_key=self.kwargs.get('pk', '0000')).order_by(
+                        page_key=page_key).order_by(
                         '-created_at').filter(created_at__lte=date)
             result = pages[0]
             result.first_version = pages.order_by('created_at')[0]
@@ -77,6 +81,14 @@ class ComicView(generic.DetailView):
             return result
 
 forum_filter = str.maketrans({x: None for x in ',.:;\'"'})
+
+class PageEditListView(LoginRequiredMixin, generic.ListView):
+    login_url = '/login'
+    model = ComicPage
+    template_name = 'comic/page_list.html'
+
+    def get_queryset(self):
+        return ComicPage.get_all_latest(self.request.user, 'page_key')
 
 def do_forum_post(request):
     if request.method != 'POST': return

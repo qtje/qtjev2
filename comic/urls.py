@@ -14,6 +14,9 @@ urlpatterns = [
 
     path('login', auth_views.LoginView.as_view(template_name='comic/author_login.html', next_page='comic:index'), name='login'),
 
+    path('edit/pages', views.PageEditListView.as_view(), name='edit_pages'),
+
+
     path('', views.ComicView.as_view(), name='index'),
     path('<str:pk>', views.ComicView.as_view(), name='page'),
 ]
