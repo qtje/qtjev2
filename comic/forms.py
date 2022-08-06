@@ -1,5 +1,6 @@
+import django.db.models
 from django import forms
-import django.core.exceptions
+from django.core.exceptions import ValidationError
 
 from . import models
 
@@ -38,33 +39,33 @@ class AutocompleteWidget(forms.TextInput):
 
 class HistoryModelField(forms.Field):
     widget=AutocompleteWidget
-    def __init__(self, choices, **kwargs):
+    def __init__(self, model, choices, **kwargs):
         kwargs['widget'] = self.widget(choices = choices)
+        self.model = model
         super().__init__(**kwargs)
 
     def clean(self, value):
-        print('beep')
-        raise django.core.exceptions.ValidationError("Test")
-
-    def validate(self, value):
-        print('beep')
-        raise django.core.exceptions.ValidationError("Test")       
+        hk = self.model.get_hk(value)
+        if hk is not None:
+            try:
+                instance = self.model.get_latest(hk)
+            except ValueError:
+                raise ValidationError(f"Malformed key '{hk}'")
+            except (self.model.DoesNotExist, ValueError):
+                raise ValidationError(f"Couldn't find entity '{value}' with key '{hk}'")
+        else:
+            return None
+        return instance
 
 
 class PageEditForm(forms.ModelForm):
 
-#    next_page_owner = HistoryModelField(
-#        model=models.ComicPage
-#        )
-#    next_page_any = HistoryModelField(model=models.ComicPage)
-
     reciprocate_owner = forms.BooleanField(initial = True)
-    reciprocate_any = forms.BooleanField(initial = True)
 
-    def add_history_field(self, name, user, model, instance, choices = None):
+    def add_history_field(self, name, user, model, instance, choices = None, **kwargs):
         if choices is None:
             choices = model.get_all_latest(user=user)
-        self.fields[name] = HistoryModelField(choices=choices)
+        self.fields[name] = HistoryModelField(model=model, choices=choices, **kwargs)
         if not instance is None:
             self.initial[name] = instance.search_key()
 
@@ -81,12 +82,13 @@ class PageEditForm(forms.ModelForm):
         self.add_history_field('arc', None, models.ComicArc, instance.arc)
         self.add_history_field('owner', user, models.Alias, instance.owner)
 
-        self.add_history_field('prev_page_owner', None, models.ComicPage, None)
-        self.add_history_field('prev_page_any', None, models.ComicPage, None)
-
+        self.add_history_field('prev_page_owner', None, models.ComicPage, None, required=False)
 
         return result
 
+    def is_valid(self):
+        self.add_error(None, 'Nope')
+        return super().is_valid()
 
     class Meta:
         model = models.ComicPage

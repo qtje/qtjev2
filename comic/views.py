@@ -156,6 +156,10 @@ class PageEditView(LoginRequiredMixin, generic.edit.UpdateView):
         result['request'] = self.request
         return result
 
+
+    def post(self, request, *args, **kwargs):
+        print('boop')
+        return super().post(request, *args, **kwargs)
  
 
 #

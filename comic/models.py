@@ -77,7 +77,22 @@ class OwnedHistory(models.Model):
         return queryset.filter(owner__owner__user=user)
 
     @classmethod
-    def get_all_latest(cls, user, key=None):
+    def get_latest(cls, hk, key=None):
+        if key is None:
+            key = cls.default_hk
+        result = cls.objects.filter(**{key: hk})
+        result = result.order_by('-created_at')
+        try:
+            return result[0]
+        except IndexError:
+            raise cls.DoesNotExist()
+
+    @classmethod
+    def get_all_latest(cls, user=None, key=None):
+        """
+        user, if provided, filters results that are owned by user
+        key, if specified, is the hk to use. Defaults to cls.default_hk
+        """
         if key is None:
             key = cls.default_hk
         result = cls.objects
@@ -103,6 +118,15 @@ class Searchable():
 
     def search_key(self):
         return f'{self.search_index()}: {self.search_string()}'
+
+    @classmethod
+    def get_hk(self, search_key):
+        """
+        Extract the hk value from the given search_key
+        """
+        if search_key is None: return None
+        if search_key == '': return None
+        return search_key.split(':')[0]
 
 def history_post_save(**kwargs):
     """

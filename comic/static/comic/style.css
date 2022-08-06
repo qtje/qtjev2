@@ -285,6 +285,43 @@ div.SideUnit
     grid-row-gap: 0.5em;
 }
 
+.AFFormError
+{
+    padding:2px;
+    background: #ccffcc;
+}
+.AFError
+{
+    position: relative; 
+    color: #007700;
+}
+.AFErrorTT
+{
+color: black;
+display: none;
+position: absolute;
+left: -2px;
+border: 1px solid black;
+z-index: 10;
+width: max-content;
+padding: 4px;
+padding-bottom: 0px;
+background: #ffff;
+}
+
+.errorlist {
+    margin: 0;
+    list-style: none;
+    padding-left: 0;
+}
+
+.AFError:hover .AFErrorTT
+{
+display:block;
+}
+
+
+
 .AuthorFormDivider {
     grid-column: 1 / span 2;
     min-height: 0.5em;
