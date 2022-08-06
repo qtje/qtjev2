@@ -185,13 +185,10 @@ class PageCreateView(LoginRequiredMixin, generic.edit.CreateView):
         return super().post(request, *args, **kwargs)
 
 
-class AliasEditView(LoginRequiredMixin, generic.edit.UpdateView):
+class GenericEditView(LoginRequiredMixin, generic.edit.UpdateView):
     login_url = '/login'
-    success_url = reverse_lazy('comic:list_aliases')
 
-    model = models.Alias
     template_name = 'comic/generic_edit.html'
-    form_class = forms.AliasEditForm
  
     def get_object(self, queryset = None):
         result = self.model.get_latest(self.kwargs['hk'])
@@ -204,7 +201,7 @@ class AliasEditView(LoginRequiredMixin, generic.edit.UpdateView):
         result['request'] = self.request
         return result
 
-class AliasCreateView(LoginRequiredMixin, generic.edit.CreateView):
+class GenericCreateView(LoginRequiredMixin, generic.edit.CreateView):
     login_url = '/login'
     success_url = reverse_lazy('comic:list_aliases')
 
@@ -217,6 +214,15 @@ class AliasCreateView(LoginRequiredMixin, generic.edit.CreateView):
         result['request'] = self.request
         return result
 
+class AliasEditView(GenericEditView):
+    success_url = reverse_lazy('comic:list_aliases')
+    model = models.Alias
+    form_class = forms.AliasEditForm
+
+class AliasCreateView(GenericCreateView):
+    success_url = reverse_lazy('comic:list_aliases')
+    model = models.Alias
+    form_class = forms.AliasCreateForm
 
 
 #
@@ -360,6 +366,30 @@ class AliasEditListView(EditListView):
         tables = []
         for entry in object_list:
             row_data = [entry.hk, entry.display_name, entry.created_at]
+            row = {
+                'row_data': row_data,
+                'edit_key': entry.hk,
+                'view_key': entry.hk,
+                }
+
+            tables.append(row)
+
+        return {
+            'header': header,
+            'rows' : tables,
+        }
+
+class ArcEditListView(EditListView):
+    model = models.ComicArc
+    edit_url = 'comic:page'
+    new_url = 'comic:index'
+    new_link_text = 'New Story Arc'
+
+    def render_table_map(self, object_list):
+        header = ['Key', 'Slug', 'Name', 'Last Modified']
+        tables = []
+        for entry in object_list:
+            row_data = [entry.hk, entry.slug_name, entry.display_name, entry.created_at]
             row = {
                 'row_data': row_data,
                 'edit_key': entry.hk,

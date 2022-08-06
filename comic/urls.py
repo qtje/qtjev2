@@ -20,12 +20,12 @@ urlpatterns = [
     path('edit/alias/<int:hk>', views.AliasEditView.as_view(), name='edit_alias'),
     path('edit/alias', views.AliasCreateView.as_view(), name='edit_alias'),
 
-    path('list/pages', views.PageEditListView.as_view(), name='edit_pages'),
-    path('list/links', views.LinkEditListView.as_view(), name='edit_links'),
-    path('list/templates', views.TemplateEditListView.as_view(), name='edit_templates'),
-    path('list/themes', views.ThemeEditListView.as_view(), name='edit_themes'),
+    path('list/pages', views.PageEditListView.as_view(), name='list_pages'),
+    path('list/links', views.LinkEditListView.as_view(), name='list_links'),
+    path('list/templates', views.TemplateEditListView.as_view(), name='list_templates'),
+    path('list/themes', views.ThemeEditListView.as_view(), name='list_themes'),
     path('list/aliases', views.AliasEditListView.as_view(), name='list_aliases'),
-#    path('edit/arcs', views.ArcEditListView.as_view(), name='edit_arcs'),
+    path('list/arcs', views.ArcEditListView.as_view(), name='list_arcs'),
 
     path('', views.ComicView.as_view(), name='index'),
     path('<str:pk>', views.ComicView.as_view(), name='page'),
