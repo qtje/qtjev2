@@ -97,8 +97,8 @@
 
 
 {% block body %}
-{% if object.body %}
-    {{ object.body }}
+{% if body %}
+    {{ body }}
 {% else %}
 <center>
 <img src="{{ object.image.url }}" title="{{ object.alt_text }}"></img>
