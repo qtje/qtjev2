@@ -49,6 +49,8 @@ class OwnedHistory(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     hk = models.IntegerField(null=True, blank=True)
 
+    default_hk = 'hk'
+
     def save(self, *args, **kwargs):
         print(f'A history was saved: {self} {kwargs=}')
         stamp = datetime.datetime.utcnow()
@@ -75,7 +77,9 @@ class OwnedHistory(models.Model):
         return queryset.filter(owner__owner__user=user)
 
     @classmethod
-    def get_all_latest(cls, user, key='kh'):
+    def get_all_latest(cls, user, key=None):
+        if key is None:
+            key = cls.default_hk
         result = cls.objects
         if user is not None:
             result = cls.filter_owner(result, user)
@@ -128,7 +132,7 @@ class Author(models.Model):
 
 
 
-class Alias(OwnedHistory):
+class Alias(OwnedHistory, Searchable):
     display_name = models.TextField()
     owner = models.ForeignKey(Author, on_delete = models.CASCADE, related_name = 'aliases')
 
@@ -146,7 +150,7 @@ class Alias(OwnedHistory):
 
 ### Comic Customization ###
 
-class PageTemplate(OwnedHistory):
+class PageTemplate(OwnedHistory, Searchable):
     owner = models.ForeignKey(Alias, on_delete = models.CASCADE, related_name = 'owned_templates')
     name = models.TextField()
     template = models.TextField(blank=True, null=True)
@@ -154,7 +158,10 @@ class PageTemplate(OwnedHistory):
     def __str__(self):
         return f'{self.name} ({self.owner}) as of {self.created_at}'
 
-class PageTheme(OwnedHistory):
+    def search_string(self):
+        return f'{self.name} ({self.owner})'
+
+class PageTheme(OwnedHistory, Searchable):
     owner = models.ForeignKey(Alias, on_delete = models.CASCADE, related_name = 'owned_themes')
     name = models.TextField()
 
@@ -188,7 +195,7 @@ class PageTheme(OwnedHistory):
 
 ### Comic Structure ###
 
-class ComicArc(OwnedHistory):
+class ComicArc(OwnedHistory, Searchable):
     owner = models.ForeignKey(Alias, on_delete = models.CASCADE, related_name = 'owned_arcs')
     slug_name = models.TextField()
     display_name = models.TextField()
@@ -204,6 +211,7 @@ class ComicPage(OwnedHistory, Searchable):
     owner = models.ForeignKey(Alias, on_delete = models.CASCADE, related_name = 'owned_pages')
 
     page_key = models.TextField() #4 hex digits
+    default_hk = 'page_key'
 
     title = models.TextField()
     arc = models.ForeignKey(ComicArc, on_delete = models.CASCADE)

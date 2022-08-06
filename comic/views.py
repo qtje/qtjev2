@@ -150,6 +150,12 @@ class PageEditView(LoginRequiredMixin, generic.edit.UpdateView):
         result = get_comic_page(date, page_key_str)
 
         return result
+
+    def get_form_kwargs(self):
+        result = super().get_form_kwargs()
+        result['request'] = self.request
+        return result
+
  
 
 #

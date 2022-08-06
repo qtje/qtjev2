@@ -276,3 +276,9 @@ div.SideUnit
     text-align:right;
 }
 
+
+
+input[type=text]
+{
+    width:90%;
+}
