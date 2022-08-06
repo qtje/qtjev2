@@ -31,7 +31,7 @@ class ComicView(generic.DetailView):
             date = dateutil.parser.parse(date)
 
         try:
-            page_key = int(self.kwargs.get('pk', 0), 16)
+            page_key = int(self.kwargs.get('pk', '0'), 16)
             page_key = f'{page_key:04}'
             pages =  models.ComicPage.objects.filter(
                         page_key=page_key).order_by(
@@ -90,6 +90,20 @@ class PageEditListView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         return ComicPage.get_all_latest(self.request.user, 'page_key')
 
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+        header = ['Page Number', 'Title', 'Story Arc', 'Alt Text', 'Owner', 'Last Modified']
+        tables = []
+        for entry in result['object_list']:
+            tables.append([entry.page_key, entry.title, entry.arc.display_name, entry.alt_text, entry.owner.display_name, entry.created_at])
+
+        result['table_map'] = {
+            'header': header,
+            'rows' : tables,
+        }
+
+        return result
+    
 def do_forum_post(request):
     if request.method != 'POST': return
 
