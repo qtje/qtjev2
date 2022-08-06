@@ -344,18 +344,19 @@ class ComicPage(OwnedHistory, Searchable):
             template = Template(template_text)
             return template.render(context)
 
-    def render_theme(self, date, theme = None, context = None):
-
-        if theme is None:
-            theme = self.theme.as_of(date)   
+    def render_theme(self, date, theme_dict = None, context = None):
 
         if context is None:
             context = Context({'object': self})
         else:
             context= Context(context)
 
-        theme_dict = theme.get_templates()
-        theme_values = {k: v.render(theme_context) for k,v in theme_dict.items()}
+        if theme_dict is None:
+            theme = self.theme.as_of(date)   
+            theme_dict = theme.get_templates()
+
+        theme_values = {k: v.render(context) for k,v in theme_dict.items()}
+        print(theme_values)
 
         return theme_values
 

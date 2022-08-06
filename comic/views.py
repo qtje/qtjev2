@@ -216,6 +216,16 @@ class TemplateCreateView(GenericCreateView):
     model = models.PageTemplate
     form_class = forms.TemplateCreateForm
 
+class ThemeEditView(GenericEditView):
+    success_url = reverse_lazy('comic:list_themes')
+    model = models.PageTheme
+    form_class = forms.ThemeEditForm
+
+class ThemeCreateView(GenericCreateView):
+    success_url = reverse_lazy('comic:list_themes')
+    model = models.PageTheme
+    form_class = forms.ThemeCreateForm
+
 
 
 #
@@ -326,8 +336,8 @@ class TemplateEditListView(EditListView):
 
 class ThemeEditListView(EditListView):
     model = models.PageTheme
-    edit_url = 'comic:page'
-    new_url = 'comic:index'
+    edit_url = 'comic:edit_theme'
+    new_url = 'comic:edit_theme'
     new_link_text = 'New Theme'
 
     def render_table_map(self, object_list):

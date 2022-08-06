@@ -310,6 +310,61 @@ class TemplateCreateForm(TemplateEditForm):
     button = 'Create Template'
 
 
+#
+# Theme edit
+#
+
+class ThemeEditForm(MyForm):
+
+    is_create = False
+    post_url = 'comic:edit_theme'
+
+    button = 'Update Theme'
+
+    def __init__(self, **kwargs):
+        instance = kwargs['instance']
+        if not self.is_create:
+            self.heading = f'Editing theme {instance.name}'
+        return super().__init__(**kwargs)
+
+    def is_valid(self):
+
+
+        date = datetime.datetime.now(datetime.timezone.utc)
+        try:
+            test_data = models.ComicPage.get_test_page()
+        except:
+            test_data = None
+
+        if test_data is not None:
+            for key in models.PageTheme.keys:
+                try:
+                    template_text = self.data[key]
+                    if template_text is None or template_text == '':
+                        continue
+                    test_data.render_theme(date, {key:django.template.Template(template_text)} )
+
+                except Exception as e:
+                    self.add_error(key, str(e))
+
+        return super().is_valid()
+
+    class Meta:
+        model = models.PageTheme
+        exclude = ['hk', 'owner']
+        widgets = {
+            'name': forms.TextInput
+        }
+
+class ThemeCreateForm(ThemeEditForm):
+
+    is_create = True
+    post_url = 'comic:edit_theme'
+
+    heading = 'Creating new theme'
+    button = 'Create Theme'
+
+
 
 
 
