@@ -2,23 +2,24 @@
 {% load static %}
 
 {% block left_links %}
-<div class="BigTextWrap">
-<a href = "{% url 'comic:help' 'quickstart' %}">Quickstart</a>
-l
-</div>
 {% endblock %}
 
 {% block center_links %}
 <div class="BigTextWrap">
+<a href = "{% url 'comic:help' 'quickstart' %}">Quickstart</a>
+</div>
+<!--
+<div class="BigTextWrap">
 <a href = "{% url 'comic:help' 'structure' %}">Comic Structure</a>
 l
 </div>
+-->
 {% endblock %}
 
-{% block right_links %}
+{% block right_links %}<!--
 <div class="BigTextWrap">
 <a href = "{% url 'comic:help' 'customization' %}">Customization</a>
-</div>
+</div> -->
 {% endblock %}
 
 {% block nav_right %}
