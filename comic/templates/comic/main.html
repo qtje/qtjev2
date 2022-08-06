@@ -54,4 +54,10 @@ Page Author:<br>
 {{ object.owner.display_name }}
 {% endblock %}
 
+{% block forums %}
+    {% for post in object.forums %}
+        <p>{{post.text}}</p>
+    {% endfor %}
+{% endblock %}
+
 

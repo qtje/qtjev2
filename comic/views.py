@@ -45,6 +45,20 @@ class ComicView(generic.DetailView):
             result.prev_links = links_from.filter(kind='p')
             result.first_links = links_from.filter(kind='f')
 
+            forums = ForumPost.objects.order_by('-timestamp').exclude(timestamp__gt=date)
+            forums_here = forums.filter(source__page_key = result.page_key)
+
+            ref = None
+            try:
+                ref = forums[0]
+                ref = forums_here[0]
+            except IndexError:
+                pass
+
+            if ref is not None:
+                forums = ForumPost.objects.order_by('-timestamp').exclude(timestamp__gt=ref.timestamp)
+                result.forums = forums[:20]
+
             result.arc = result.arc.as_of(date)
 
             template = Template(result.template.as_of(date).template)
