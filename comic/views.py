@@ -43,12 +43,15 @@ def process_date(date):
     Take a date string and turn it into a datetime object.
     If the date_str is None, return the current date instead.
     """
+    now = datetime.datetime.now(datetime.timezone.utc)
     if date is None:
-        date = datetime.datetime.now(datetime.timezone.utc)
+        date = now
     else:
         date = dateutil.parser.parse(date)
         if date.tzinfo is None:
             date = date.replace(tzinfo=datetime.timezone.utc)
+        if date > now:
+            date = now
     return date
 
 def get_date_from_request(request):
