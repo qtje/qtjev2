@@ -4,6 +4,10 @@
 
 In simplest terms, qtjev2 is a system that faciliates multi-user construction of a directed graph for the purpose of imposing narrative structure on a collection of comic pages. This short tutorial will cover the basic steps required to implement a conventional linear webcomic structure in qtjev2.
 
+## Content Guidelines
+
+Please do not post anything illegal. All content posted to the site must be CC0 or equivalent (i.e. public domain). Otherwise, do what you want.
+
 ## Create an Alias
 
 All qtjev2 Pages and Links are owned by an Alias owned by and Author. Therefore you'll need to create an Alias to begin posting. You can click the `ALIASES` link at the top of the page to manage your Aliases. This page lists all of your Aliases (none until you create one). Click `New Alias` to create a new Alias.
@@ -68,4 +72,13 @@ A Theme is a collection of django template snippets that defines the rendering o
 
 Themes and Templates belong to Aliases, but can be used by any Alias.
 
+## Additional Content Guidelines
 
+I won't well you want to do, but I'm pretty sure Kant says I have to tell you what I'm going to do:
+
+* Upgrading from yellow to green
+* Wandering the Time Ocean forever
+* Encountering the King of Time
+  * Repeatedly
+* Trying to find a way to reach 2021
+* No more asphalt
