@@ -79,6 +79,6 @@ I won't well you want to do, but I'm pretty sure Kant says I have to tell you wh
 * Upgrading from yellow to green
 * Wandering the Time Ocean forever
 * Encountering the King of Time
-  * Repeatedly
+    * Repeatedly
 * Trying to find a way to reach 2021
 * No more asphalt
