@@ -142,6 +142,11 @@ class PageFeed(Feed):
     link = '/'
     description = 'A webcomic of depression, sarcasm, irony, and ennui. Updates whenever.'
 
+    def get_context_data(self, **kwargs):
+        result = super().get_context_data(**kwargs)
+        self.request = kwargs['request']
+        return result
+
     def items(self):
         return models.ComicPage.get_all_latest()[:10]
 
@@ -157,7 +162,7 @@ class PageFeed(Feed):
     def item_enclosures(self, item):
         image = item.image
         mime = mimetypes.guess_type(image.url)[0]
-        url = image.url
+        url = self.request.build_absolute_uri(image.url)
         entry = Enclosure(url = url, length = str(image.size), mime_type=mime)
         return [entry]
 #
