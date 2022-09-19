@@ -508,7 +508,7 @@ class ComicPage(OwnedHistory, Searchable):
         try:
             latest = max(keys)
         except ValueError:
-            return cls.fmt_page_key(1)
+            return cls.fmt_page_key(0)
         if latest >= 0xffff:
             raise RuntimeError('Out of keys')
         return cls.fmt_page_key(latest+1)
