@@ -2,7 +2,7 @@
 
 ## What is qtjev2?
 
-In simplest terms, qtjev2 is a system that faciliates multi-user construction of a directed graph for the purpose of imposing narrative structure on a collection of comic pages. This short tutorial will cover the basic steps required to implement a conventional linear webcomic structure in qtjev2.
+In simplest terms, qtjev2 is a system that facilitates multi-user construction of a directed graph for the purpose of imposing narrative structure on a collection of comic pages. This short tutorial will cover the basic steps required to implement a conventional linear webcomic structure in qtjev2.
 
 ## Content Guidelines
 
@@ -10,14 +10,14 @@ Please do not post anything illegal. All content posted to the site must be CC0 
 
 ## Create an Alias
 
-All qtjev2 Pages and Links are owned by an Alias owned by and Author. Therefore you'll need to create an Alias to begin posting. You can click the `ALIASES` link at the top of the page to manage your Aliases. This page lists all of your Aliases (none until you create one). Click `New Alias` to create a new Alias.
+All qtjev2 Pages and Links are owned by an Alias owned by an Author. Therefore you'll need to create an Alias to begin posting. You can click the `ALIASES` link at the top of the page to manage your Aliases. This page lists all of your Aliases (none until you create one). Click `New Alias` to create a new Alias.
 ![Alias Management Page]({% static 'help/alias_mgmt.png' %})
 
-You'll be presented with a form to create a new alias
+You'll be presented with a form to create a new alias.
 
 ![Alias Creation Form]({% static 'help/alias_form.png' %})
 
-The Display Name the name that will be used to identify the Alias that created a page or link. After creation, and alias's display name can be changed at any time by clicking the `Edit` link on the `ALIASES` page.
+The "Display Name" is the name that will be used to identify the Alias that created a page or link. After creation, an alias's Display Name can be changed at any time by clicking the `Edit` link on the `ALIASES` page.
 
 Enter a suitable display name and click `Create Alias` to create your Alias.
 
@@ -49,20 +49,20 @@ The image below shows how the fields in the form map to the displayed page using
 
 ### Previous Page and Page Linking
 
-By default, the Reciprotate box next to Previous Page is checked. Links between pages are one-way, and the Reciprocate option has the effect of ensuring the the selected Previous Page also link to the new page as its next page.
+By default, the `Reciprocate` box next to `Previous Page` is checked. Links between pages are one-way, and the `Reciprocate` option has the effect of ensuring the the selected `Previous Page` also link to the new page as its next page.
 
-When the Reciprocate option is selected, two links will be created with the page. One will be a previous link assigned to the new page pointing at the previous page, and the other will be a next link assigned to the previous page and pointing at the new page. If it is not possible to create both links, then the page upload will fail with an error messsage.
+When the `Reciprocate` option is selected, two links will be created with the page. One will be a previous link assigned to the new page pointing at the previous page, and the other will be a next link assigned to the previous page and pointing at the new page. If it is not possible to create both links, then the page upload will fail with an error messsage.
 
 ![Link creation]({% static 'help/link_recip.png' %})
 
-Each page can have 3 next links and 3 previous links. One of each is reserved for the Alias that owns the page, one of each is reserved for an Alias that does not own the page, and the final pair can be created by anyone.
+Each page can have 3 next links and 3 previous links. One of each is reserved for the Alias that owns the page, one of each is reserved for an Alias that does _not_ own the page, and the final pair can be created by anyone.
 
-Though it would make your page difficult to find, it is possible to create a page that doesn't have a previous page link by default. To do this, leave the Previous Page field blank and uncheck the Reciprocate checkbox.
+Though it would make your page difficult to find, it is possible to create a page that doesn't have a previous page link by default. To do this, leave the `Previous Page` field blank and uncheck the `Reciprocate` checkbox.
 
 
 ### Story Arcs
 
-Story arcs are objects used to group pages, typically indicating that a page belongs to a specific narrative arc. In this comic, Story Arcs are objects owned by an alias that include a display name that is used to represent the arc. The Story Arc owner can change the display name of the arc at any time, and any Page can include itself any Story Arc even if the Page owner isn't the Story Arc owner.
+Story arcs are objects used to group pages, typically indicating that a page belongs to a specific narrative arc. In this comic, Story Arcs are objects owned by an alias that include a display name that is used to represent the arc. The Story Arc owner can change the display name of the arc at any time, and any Page can include itself in any Story Arc, even if the Page owner isn't the Story Arc owner.
 
 A default Story Arc called "No Story" is provided for uncategorized pages.
 
@@ -74,7 +74,7 @@ Themes and Templates belong to Aliases, but can be used by any Alias.
 
 ## Additional Content Guidelines
 
-I won't well you want to do, but I'm pretty sure Kant says I have to tell you what I'm going to do:
+I won't tell you what to do, but I'm pretty sure Kant says I have to tell you what I'm going to do:
 
 * Upgrading from yellow to green
 * Wandering the Time Ocean forever
