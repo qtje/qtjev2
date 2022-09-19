@@ -1,0 +1,97 @@
+{% extends "comic/base.html" %}
+
+
+
+
+{% block left_links %}
+{% if page_obj.has_previous %}
+<div style="display:flex">
+
+{% if page_obj.previous_page_number != 1%}
+<div class="BigTextWrap">
+<a href="?page=1">1</a>
+...
+</div>
+{% endif %}
+
+<div class="PixelWrap">
+<a class="navsym"  href="?page={{page_obj.previous_page_number}}">{{page_obj.previous_page_number}}
+    <svg viewBox="-1.732 -1 1.732 2" xml:space="preserve" height="30px">
+    <polygon points="0,1, 0,-1, -1.732,0" />
+    </svg>
+</a>
+</div>
+
+</div>
+
+{% endif %}
+{% endblock %}
+
+{% block center_links %}
+<div class="BigTextWrap" style="padding-left:7px; padding-right:7px">
+{% if is_paginated %}
+{{page_obj.number}}
+{% else %}
+Forums
+{% endif %}
+</div>
+{% endblock %}
+
+{% block right_links %}
+{% if page_obj.has_next %}
+<div style="display:flex">
+
+<div class="PixelWrap">
+<a class="navsym"  href="?page={{page_obj.next_page_number}}">{{page_obj.next_page_number}}
+    <svg viewBox="0 -1 1.732 2" xml:space="preserve" height="30px">
+    <polygon points="0,1, 0,-1, 1.732,0" />
+    </svg>
+
+</a>
+</div>
+
+{% if page_obj.next_page_number != page_obj.paginator.num_pages %}
+<div class="BigTextWrap">
+
+...
+<a href="?page={{page_obj.paginator.num_pages}}">{{page_obj.paginator.num_pages}}</a>
+</div>
+{% endif %}
+
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% block nav_right %}
+
+{% endblock %}
+
+
+
+{% block body %}
+<input type="checkbox" value="hide"><label for="hide">Hide empty posts</label>
+{% for post in object_list %}
+        <p class="ForumPost{% if post.empty %} ForumEmpty{%endif%}">
+        {% if not post.empty %}
+            {{post.text}}
+        {% else %}
+            &nbsp;
+        {% endif %}
+        </p>
+{% endfor %}
+
+{% endblock %}
+
+
+{% block meta_left %}
+{% endblock %}
+
+{% block meta_right %}
+{% endblock %}
+
+
+{% block forums %}
+{% endblock %}
+
+
