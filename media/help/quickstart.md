@@ -8,6 +8,8 @@ In simplest terms, qtjev2 is a system that facilitates multi-user construction o
 
 Please do not post anything illegal. All content posted to the site must be CC0 or equivalent (i.e. public domain). Otherwise, do what you want.
 
+Note that the web site provides 800 pixels of width for displaying an image. At present you'll have to resize the image to 800 pixels wide if you want it to fit inside the page. Otherwise there will be a scrollbar. The vertical height is not bounded. At some future time, there may be an option to autuomatically rescale images to 800 pixels if desired.
+
 ## Create an Alias
 
 All qtjev2 Pages and Links are owned by an Alias owned by an Author. Therefore you'll need to create an Alias to begin posting. You can click the `ALIASES` link at the top of the page to manage your Aliases. This page lists all of your Aliases (none until you create one). Click `New Alias` to create a new Alias.
@@ -38,6 +40,8 @@ You'll be presented with a form to upload a new Page.
 The form comes populated with one of your Aliases, but the Alias can be changed by typing the display name of an alias into the Alias field and then selecting the matching Alias from the dropdown.
 
 The minimum required to upload a new page is an image (selected via the Browse button in the Image field), but you'll typically also want to link to a previous page. You can type the number of title of the previous page in the Previous Page field and select the matching page from the dropdown. If you haven't created any pages, then you'll have to link to a page created by another author. You can link to a page that already has a next page as long as it has fewer than 3 next pages.
+
+Note again that the default image width is 800 pixels. A wider image will have a scrollbar on the bottom, and a narrower image will be centered on the page.
 
 At this point, you could click `Create Page` to upload the new image as a comic page following the selected previous page and published as the selected Alias. Along with alt text, this is all you need to create a conventional serial webcomic. Note that once created, pages can be edited but cannot be deleted. This is true of all comic objects except links between pages.
 
