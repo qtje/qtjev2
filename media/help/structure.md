@@ -1,5 +1,7 @@
 # Comic Structure
 
+This document provides a technically-themed description of the structure of qtjev2 as it compares to conventional web comics.
+
 ## Conventional Web comics
 
 A conventional web comic has a familiar structure: it consists of a sequence of pages each of which provides a link to the previous page and the next page. Often there will also be links to the first and last pages of the comic. It's fairly straightforward to represent a conventional web comic as a doubly-linked list, but it's also possible to represent it as a graph with a specific set of constraints.
@@ -64,6 +66,12 @@ Due to the exclusion of "last" links, the definition of a last page in the conte
 
 ### Visual representation
 
+
+## History
+
+A conventional web comic typically has a trivial history. It starts out as a single page, and then new pages are added one at a time, each becoming the new last page. qtjev2's less-constrained structure permits non-trivial histories as pages can be added with links to and from almost any other page in the comic (and not just the last page). In addition while the links in a conventional web comic change only under exceptional circumstances (such as a page being removed), the links in qtjev2 may change at any time as long as they satisfy the comic's structural constraints. Therefore the history of qtjev2 cannot be procedurally generated with high accuracy. Instead, the history is maintained explicitely in database.
+
+TODO: more on this
 
 
 
