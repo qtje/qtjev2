@@ -72,6 +72,8 @@ Note that there may be multiple first and last pages. The present implementation
 
 ![Page form mapping]({% static 'help/qtjev2_graph.svg' %})
 
+Oh, yes. I forgot to tell you. There can only be 65536 unique qtjev2 pages.
+
 ## History as narrative structure
 
 A conventional web comic typically has a trivial history. It starts out as a single page, and then new pages are added one at a time, each becoming the new last page. qtjev2's less-constrained structure permits non-trivial histories as pages can be added with links to and from almost any other page in the comic (and not just the last page). In addition while the links in a conventional web comic change only under exceptional circumstances (such as a page being removed), the links in qtjev2 may change at any time as long as they satisfy the comic's structural constraints. Therefore the history of qtjev2 cannot be procedurally generated with high accuracy. Instead, the history is maintained explicitely in database.
