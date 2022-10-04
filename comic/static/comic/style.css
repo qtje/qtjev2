@@ -185,6 +185,19 @@ img.profile
     margin:2px;
 }
 
+.HelpContainer
+{
+    margin: 0px auto; 
+    width:800px;
+}
+.HelpContainer img
+{
+    max-width: 800px;
+    margin: auto;
+    display: block;
+}
+
+
 .AuthorHelpWrap
 {
     font-size: 26px;

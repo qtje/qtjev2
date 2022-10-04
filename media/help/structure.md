@@ -64,10 +64,13 @@ Since the only terminus page for "first" links is page 0000, there can only be a
 
 Due to the exclusion of "last" links, the definition of a last page in the context of qtjev2 is simple a page originating exactly one "previous" and one "first" link while terminating one "next" link. Nothing in qtjev2 constrains the number of pages that can meet this definition. Since the last page of qtje is not unique, it is not possible to procedural determine the unique final page, and so qtjev2 has no concept of a "last" link. While "last" links could in principle be specified manually, a common characterstic of last pages in conventional web comics is that they change over time, and it is typically desirable for the "last" links to always point at the unique last page. This is not likely to be possible in qtjev2 since multiple authors will likely own multiple last pages. In addition, the exclusion of the "last" link creates a pleasing symmetry for the navigation links and evokes both the uniusual topology of qtjev2 and the final state of qtje.
 
-
 ### Visual representation
 
+A more intuitive definition for a first or last page may simply be a page having no "previous" link or no "next" link respectively. In the below diagram, pages matching the relaxed definition for first page have a thick solid border, and pages matching the relaxed definition of a last page have a dashed border. For clarify, the "first" links are drawn only at their origins and termini.
 
+Note that there may be multiple first and last pages. The present implementation of the "first" link guarantees at least one trivial path between any two pages, but unlike a contentional webcomic, there may not be a path between any two pages that does not contain a "first" link.
+
+![Page form mapping]({% static 'help/qtjev2_graph.svg' %})
 
 ## History
 
