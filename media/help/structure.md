@@ -28,7 +28,7 @@ For the purposes of this document, a graph consists of **nodes** connected by **
 * The page is the terminus of a "last" link from every other page in the comic
 * The page originates a single "first" link
 
-#### Middle Page
+#### Interior Page
 
 * There may be any number of pages of type
 * The page may not link to itself
