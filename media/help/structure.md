@@ -41,6 +41,7 @@ For the purposes of this document, a graph consists of **nodes** connected by **
 
 ### Visual representation
 
+![Page form mapping]({% static 'help/conventional_graph.svg' %})
 
 
 ## qtjev2
@@ -65,6 +66,7 @@ Due to the exclusion of "last" links, the definition of a last page in the conte
 
 
 ### Visual representation
+
 
 
 ## History
