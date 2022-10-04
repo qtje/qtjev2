@@ -72,7 +72,7 @@ Note that there may be multiple first and last pages. The present implementation
 
 ![Page form mapping]({% static 'help/qtjev2_graph.svg' %})
 
-Oh, yes. I forgot to tell you. There can only be 65536 unique qtjev2 pages.
+Oh, yes. I forgot to tell you. There can only be 65536 different qtjev2 pages.
 
 ## History as narrative structure
 
