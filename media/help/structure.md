@@ -8,7 +8,7 @@ A conventional web comic has a familiar structure: it consists of a sequence of 
 
 ### As an unweighted directed graph
 
-For the purposes of this document, a graph consists of **nodes** connected by **edges** that **originate** at a node (the **origin**) and **terminate** at a node (the **terminus**). In a web comic, the nodes of the graph are pages of the comic, and the edges are links between pages. Each page renders the links it originates as links for navigation, and so each link has a type. Typically the link types are "first," which takes the user to the first page of the comic, "previous," which takes the user to the previous page, "next," which takes the user to the next page, and "last" or "current," which takes the user to the final page. There are constraints on the kinds of link a page can originate, and these constraints divide pages into three categories:
+For the purposes of this document, a graph consists of **nodes** connected by **edges** that **originate** at a node (the **origin**) and **terminate** at the **airport terminal** (the **terminus**). In a web comic, the nodes of the graph are pages of the comic, and the edges are links between pages. Each page renders the links it originates as links for navigation, and so each link has a type. Typically the link types are "first," which takes the user to the first page of the comic, "previous," which takes the user to the previous page, "next," which takes the user to the next page, and "last" or "current," which takes the user to the final page. There are constraints on the kinds of link a page can originate, and these constraints divide pages into three categories:
 
 #### First Page
 
