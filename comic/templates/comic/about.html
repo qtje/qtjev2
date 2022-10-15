@@ -1,0 +1,62 @@
+{% extends "comic/base.html" %}
+
+{% block extra_rss_links %}
+
+{% if theme_values.extra_rss_links %}
+    {{theme_values.extra_rss_links}}
+{% else %}
+{% endif%}
+
+{% endblock %}
+
+
+{% block left_links %}
+{% endblock %}
+
+{% block center_links %}
+<div>
+        <div class="PixelWrap">
+        <a class="navsym" href = "{% url 'comic:page' '0000'  %}">
+            <svg viewBox="0 0 1 1" xml:space="preserve" height="30px">
+            <polygon points="0,0, 0,1, 1,1, 1,0" />
+            </svg>
+        </a>
+        </div> 
+</div>
+{% endblock %}
+
+
+
+{% block right_links %}
+{% endblock %}
+
+{% block nav_right %}
+{% if theme_values.nav_right %}
+    {{theme_values.nav_right}}
+{% else %}
+
+<div class="SmallTextWrap">
+</div>
+
+{% endif %}
+
+{% endblock %}
+
+
+{% block body %}
+<div class="HelpContainer">
+<p>The original qtje web comic (don't look it up) set out to be a bad web comic and to explore what it meant to be bad. It explored many forms of badness - bad art, bad writing, obscene and offensive subject matter, internal inconsistency, incomplete narratives, cynical bitterness, self-loathing, pettiness, and xenophobia to name a few.</p>
+<p>Through its deep exploration of badness in all its forms, qtje became an albatross. As time passed, The Author began to regret some of the things it had created, but it also began to see something else buried deep inside qtje. While qtje was originally born of a sincere interested in bad art and bad webcomics in particular, the comic's badness also served as a sort of escape valve for perfectionism. The Author, never satisfied with the inadequacies of its attempts at good art, decided to instead embrace its failures and make them central to the work. By definition you cannot fail to make bad art. </p>
+<p>Toward the end of qtje's run, The Author began to conceive and explore techniques born of badness qua escape valve that it found to be genuinely appealing. A good web comic, accepting of its shortcomings and cognizant of its strengths, began to emerge. The comic began to distance itself from its offensive past and tried to express something like sincerity while exploring some interesting narrative structures informed by its unwritten lore. Then, seemingly out of nowhere, an ending emerged, and The Author completed the comic.</p>
+<p>qtjev2 is a new beginning - a collaborative experiment in topological storytelling that is free to be whatever it will. The Author can't speak on behalf of the other authors, but for its part intends to leave behind the original comic's baggage and create a more sincere comic that aims to be good but accepts itself as it will be and hopes for the best.</p>
+</div>
+{% endblock %}
+
+
+{% block meta_left %}
+{% endblock %}
+
+{% block meta_right %}
+{% endblock %}
+
+

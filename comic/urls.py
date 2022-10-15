@@ -2,6 +2,8 @@ from django.urls import path
 
 from django.contrib.auth import views as auth_views
 
+from django.views.generic import TemplateView
+
 from . import views
 
 app_name = 'comic'
@@ -11,6 +13,8 @@ urlpatterns = [
     path('forum', views.ForumView.as_view(), name='forum'),
     path('archive', views.index, name='archive'),
     path('post', views.do_forum_post),
+
+    path('about', TemplateView.as_view(template_name='comic/about.html'), name='about'),
 
     path('login', auth_views.LoginView.as_view(template_name='comic/author_login.html', next_page='comic:index'), name='login'),
     path('logout', auth_views.LogoutView.as_view(next_page='comic:index'), name='logout'),
